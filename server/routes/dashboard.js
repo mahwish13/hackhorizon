@@ -1,8 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { getStats } = require('../controllers/dashboardController');
-const auth = require('../middleware/auth');
+const { 
+    getSellerDashboard, 
+    getBuyerDashboard, 
+    getGstSummary 
+} = require('../controllers/dashboardController');
+const verifyToken = require('../middleware/auth');
+const requireRole = require('../middleware/roleGuard');
 
-router.get('/stats', auth, getStats);
+// All routes are protected
+router.use(verifyToken);
+
+router.get('/seller', requireRole("seller"), getSellerDashboard);
+router.get('/buyer', requireRole("buyer"), getBuyerDashboard);
+router.get('/gst', getGstSummary);
 
 module.exports = router;

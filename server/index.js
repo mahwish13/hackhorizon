@@ -1,28 +1,52 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
 const connectDB = require('./config/db');
 
-// Initialize Express
-const app = express();
+// Import routes
+const authRoutes = require('./routes/auth');
+const invoiceRoutes = require('./routes/invoices');
+const dashboardRoutes = require('./routes/dashboard');
+const requestRoutes = require('./routes/requests');
 
 // Connect to Database
 connectDB();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+const app = express();
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/invoices', require('./routes/invoices'));
-app.use('/api/dashboard', require('./routes/dashboard'));
-app.use('/api/requests', require('./routes/requests'));
+// Middleware
+app.use(express.json());
+app.use(cors({ 
+    origin: "http://localhost:5173", 
+    credentials: true 
+}));
+
+// Mount Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/requests', requestRoutes);
 
 // Root route
 app.get('/', (req, res) => {
-    res.send('API is running...');
+    res.json({ success: true, message: "InvoiceSync API running" });
+});
+
+// 404 Handler
+app.use((req, res) => {
+    res.status(404).json({ success: false, message: "Route not found" });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        success: false, 
+        message: err.message || "Internal server error" 
+    });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

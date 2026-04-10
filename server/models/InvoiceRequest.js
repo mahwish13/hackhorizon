@@ -1,9 +1,35 @@
 const mongoose = require('mongoose');
 
 const invoiceRequestSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    details: { type: String, required: true },
-    status: { type: String, enum: ['requested', 'approved', 'rejected'], default: 'requested' }
-}, { timestamps: true });
+    buyerId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User", 
+        required: true 
+    },
+    buyerGstin: { 
+        type: String, 
+        required: true, 
+        uppercase: true 
+    },
+    sellerGstin: { 
+        type: String, 
+        required: true, 
+        uppercase: true 
+    },
+    note: { 
+        type: String, 
+        trim: true, 
+        default: "" 
+    },
+    status: { 
+        type: String, 
+        enum: ["pending", "fulfilled"], 
+        default: "pending" 
+    },
+    createdAt: { 
+        type: Date, 
+        default: Date.now 
+    }
+});
 
 module.exports = mongoose.model('InvoiceRequest', invoiceRequestSchema);
