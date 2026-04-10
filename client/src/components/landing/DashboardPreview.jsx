@@ -4,27 +4,11 @@ export default function DashboardPreview() {
   const [imgError, setImgError] = useState(false);
 
   return (
-    <section className="bg-[#FDFBF7] py-24 px-6 md:px-10 text-center relative overflow-hidden" id="preview">
+    <div className="py-6 px-0 text-center relative overflow-hidden" id="preview">
       {/* bg glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#047857]/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto">
-        {/* Section label */}
-        <div className="inline-flex items-center gap-2 border border-[#047857]/20 bg-[#047857]/8 text-[#047857] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#047857]" />
-          Product Preview
-        </div>
-
-        <h2
-          className="font-extrabold text-[clamp(1.8rem,4vw,3rem)] text-[#0A2518] mb-4 leading-tight"
-          style={{ fontFamily: 'Plus Jakarta Sans' }}
-        >
-          Everything in one view
-        </h2>
-        <p className="text-[#4D6357] text-base max-w-lg mx-auto leading-relaxed mb-14">
-          A unified dashboard for sellers and buyers&mdash;real-time invoice tracking, GST summaries, and payment status at a glance.
-        </p>
-
         {/* Browser Shell */}
         <div className="relative rounded-[1.75rem] border border-[#E5E2D9] bg-[#FFFFFF] p-1.5 shadow-[0_0_80px_rgba(74,222,128,0.07)] hover:shadow-[0_0_120px_rgba(74,222,128,0.12)] transition-shadow duration-500">
 
@@ -68,6 +52,6 @@ export default function DashboardPreview() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

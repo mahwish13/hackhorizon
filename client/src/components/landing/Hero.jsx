@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import Marquee from './Marquee';
+import DashboardPreview from './DashboardPreview';
 
 export default function Hero() {
   return (
@@ -11,7 +13,7 @@ export default function Hero() {
         <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[1px] h-[40%] bg-gradient-to-b from-[#047857]/20 to-transparent" />
         {/* grid overlay */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.14]"
           style={{
             backgroundImage: 'linear-gradient(#047857 1px, transparent 1px), linear-gradient(90deg, #047857 1px, transparent 1px)',
             backgroundSize: '64px 64px',
@@ -20,18 +22,12 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center animate-fade-up">
-
-        {/* Pill badge */}
-        <div className="inline-flex items-center gap-2 border border-[#047857]/25 bg-[#047857]/8 text-[#047857] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-8 shadow-lg shadow-[#047857]/10">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#047857] inline-block" style={{ animation: 'pulse-soft 2s ease-in-out infinite' }} />
-          B2B Invoice Collaboration Platform — GST Ready
-        </div>
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center pt-24 md:pt-28 animate-fade-up">
 
         {/* Headline */}
         <h1
-          className="text-[clamp(2.5rem,7vw,5.5rem)] font-extrabold leading-[1.05] tracking-tight text-[#0A2518] mb-6"
-          style={{ fontFamily: 'Plus Jakarta Sans' }}
+          className="text-[clamp(2.5rem,7vw,5.5rem)] font-semibold leading-[1.05] tracking-tight text-[#0A2518] mb-6"
+          style={{ fontFamily: 'Montserrat' }}
         >
           Streamline Your{' '}
           <span className="gradient-text text-glow">Invoice</span>{' '}
@@ -71,6 +67,14 @@ export default function Hero() {
         <p className="text-xs font-medium text-[#728279] tracking-wide">
           No credit card required &nbsp;·&nbsp; Free to start &nbsp;·&nbsp; GST-ready
         </p>
+
+        <div className="mt-10 w-full">
+          <Marquee />
+        </div>
+
+        <div className="mt-8 w-full">
+          <DashboardPreview />
+        </div>
 
       </div>
 

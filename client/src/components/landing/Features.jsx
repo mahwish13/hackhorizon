@@ -67,12 +67,6 @@ const Features = () => {
 
       {/* heading */}
       <div className="relative z-10 text-center mb-12">
-        <span
-          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#047857] mb-3 px-4 py-1.5 rounded-full border border-[#047857]/20 bg-[#047857]/10 backdrop-blur-md w-fit mx-auto"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#047857] animate-pulse inline-block" />
-          Everything you need
-        </span>
         <h2 
           className="text-[clamp(28px,5vw,56px)] font-bold tracking-tight leading-tight text-[#0A2518]"
           style={{ fontFamily: 'Plus Jakarta Sans' }}

@@ -55,10 +55,6 @@ export default function Testimonials() {
 
       {/* Header */}
       <div className="text-center mb-16 px-6 max-w-2xl mx-auto flex flex-col items-center relative">
-        <div className="inline-flex items-center gap-2 border border-[#047857]/20 bg-[#047857]/8 text-[#047857] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#047857]" />
-          What our users say
-        </div>
         <h2
           className="text-[clamp(1.8rem,4vw,2.75rem)] font-extrabold text-[#0A2518] leading-tight mb-4"
           style={{ fontFamily: 'Plus Jakarta Sans' }}
