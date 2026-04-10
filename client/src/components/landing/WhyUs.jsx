@@ -1,91 +1,48 @@
+const reasons = [
+    ['01', 'Built for Indian B2B', 'GST-native, INR-first, with TDS handling, e-way bill support, and MSME-friendly workflows from day one.'],
+    ['02', 'Real collaboration, not just sharing', 'Buyers and sellers work in one workspace to approve, dispute, and resolve invoices without leaving context.'],
+    ['03', 'No setup headaches', 'Connect Tally or Zoho Books data quickly and get to value without a heavyweight implementation cycle.'],
+    ['04', 'Enterprise-grade security', 'Audit trails, role-based access, encrypted sessions, and robust controls keep finance teams comfortable.'],
+];
+
 export default function WhyUs() {
-  const points = [
-    { icon: '→', title: 'Real-time collaboration', desc: 'Sellers and buyers work on the same invoice simultaneously. No version confusion.' },
-    { icon: '✓', title: 'Built for Indian GST', desc: 'CGST, SGST, IGST handled automatically. No manual calculations.' },
-    { icon: '↻', title: 'Full audit trail', desc: 'Every status change, every action — logged, timestamped, and accessible.' }
-  ];
-
-  const stats = [
-    { val: '10,000+', label: 'Invoices processed', progress: 'w-[85%]' },
-    { val: '98%', label: 'Acceptance rate', progress: 'w-[98%]' },
-    { val: '< 2min', label: 'Average validation time', progress: 'w-[15%]' },
-    { val: 'Zero', label: 'GST calculation errors', progress: 'w-full' }
-  ];
-
-  const badges = ["256-bit SSL", "GSTN Compliant", "ISO Ready", "Data Encrypted"];
-
-  return (
-    <section id="whyus" className="bg-dark py-24 px-6 md:px-10">
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-        
-        {/* Left Column (Content & List) */}
-        <div>
-          <div className="inline-flex items-center bg-primary/20 text-primary rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-2">
-            Why InvoiceSync
-          </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-4 leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-            Stop chasing invoices. <br className="hidden sm:block" />Start closing deals.
-          </h2>
-          <p className="text-sm text-secondary mt-5 leading-relaxed max-w-lg" style={{ fontFamily: 'Inter' }}>
-            Most invoice tools are built for accountants. InvoiceSync is built for the people who actually send and receive invoices every day.
-          </p>
-          
-          <div className="mt-10 flex flex-col gap-6">
-            {points.map((pt, i) => (
-              <div key={i} className="flex gap-4 items-start group">
-                <div className="w-8 h-8 rounded-lg bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary font-bold group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-inner">
-                  {pt.icon}
+    return (
+        <section id="why-us" className="bg-[#081d14] py-24 text-white">
+            <div className="mx-auto grid w-full max-w-7xl items-start gap-12 px-5 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-8">
+                <div className="lg:sticky lg:top-28">
+                    <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bb28c]">Why InvoiceSync</p>
+                    <h2 className="mt-4 font-heading text-4xl font-extrabold leading-tight sm:text-5xl">
+                        More than another invoicing tool.
+                    </h2>
+                    <p className="mt-6 text-lg leading-8 text-white/58">
+                        Most products stop at invoice creation. InvoiceSync is designed for the full finance motion: creation, review, reconciliation, compliance, and cash visibility.
+                    </p>
+                    <div className="mt-8 flex items-center gap-4">
+                        <div className="flex -space-x-2">
+                            {['R', 'T', 'A', 'S'].map((letter) => (
+                                <div key={letter} className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#081d14] bg-primary/80 text-sm font-bold text-white">
+                                    {letter}
+                                </div>
+                            ))}
+                        </div>
+                        <p className="text-sm text-white/48">Trusted by 500+ Indian businesses</p>
+                    </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-white">{pt.title}</h4>
-                  <p className="text-xs text-secondary mt-1.5 max-w-sm leading-relaxed">{pt.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Right Column (Stat Cards Grid) */}
-        <div className="flex flex-col">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {stats.map((st, i) => (
-              <div 
-                key={i} 
-                className="bg-white/5 border border-white/10 rounded-[1.25rem] p-6 relative overflow-hidden flex flex-col hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
-              >
-                <div className="text-3xl md:text-4xl font-extrabold text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-                  {st.val}
+                <div className="grid gap-5">
+                    {reasons.map(([num, title, text]) => (
+                        <div key={num} className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition hover:border-white/18 hover:bg-white/7">
+                            <div className="grid gap-4 md:grid-cols-[92px_1fr] md:items-start">
+                                <div className="font-heading text-5xl font-black text-primary/32">{num}</div>
+                                <div>
+                                    <h3 className="font-heading text-2xl font-bold text-white">{title}</h3>
+                                    <p className="mt-3 text-base leading-8 text-white/52">{text}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                <div className="text-xs text-secondary mt-2.5 font-medium">
-                  {st.label}
-                </div>
-                
-                {/* Decorative Bottom Progress Lines */}
-                <div className="absolute bottom-0 left-0 h-1 bg-primary/20 w-full" />
-                <div 
-                  className={`absolute bottom-0 left-0 h-1 bg-primary group-hover:opacity-100 opacity-80 transition-opacity ${st.progress}`} 
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Secured By Trust Strip */}
-          <div className="mt-8 pt-8 border-t border-white/10 flex flex-wrap items-center gap-3">
-            <span className="text-xs text-secondary/70 uppercase tracking-widest font-bold mr-2">
-              Secured by
-            </span>
-            {badges.map((badge, i) => (
-              <span 
-                key={i} 
-                className="border border-white/10 bg-white/5 hover:bg-white/10 transition-colors rounded-full px-3.5 py-1.5 text-xs text-secondary font-medium"
-              >
-                {badge}
-              </span>
-            ))}
-          </div>
-        </div>
-
-      </div>
-    </section>
-  );
+            </div>
+        </section>
+    );
 }

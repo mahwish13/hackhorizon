@@ -1,157 +1,112 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Button from '../shared/Button';
+
+const plans = [
+    {
+        name: 'Starter',
+        price: { monthly: 'Rs999', yearly: 'Rs799' },
+        desc: 'For freelancers and lean teams getting started.',
+        features: ['Up to 50 invoices / month', '2 team members', 'GST computation', 'PDF export', 'Email support'],
+        cta: 'Get Started',
+        popular: false,
+    },
+    {
+        name: 'Growth',
+        price: { monthly: 'Rs2,499', yearly: 'Rs1,999' },
+        desc: 'For growing businesses that need collaboration and visibility.',
+        features: ['Unlimited invoices', '10 team members', 'Buyer collaboration portal', 'Payment integrations', 'Analytics dashboard', 'Priority support'],
+        cta: 'Start Free Trial',
+        popular: true,
+    },
+    {
+        name: 'Enterprise',
+        price: { monthly: 'Custom', yearly: 'Custom' },
+        desc: 'For teams with compliance, security, and integration needs.',
+        features: ['Unlimited everything', 'Custom roles and permissions', 'ERP integrations', 'Dedicated account manager', 'SLA guarantee', 'SSO and audit logs'],
+        cta: 'Contact Sales',
+        popular: false,
+    },
+];
 
 export default function Pricing() {
-  const [isYearly, setIsYearly] = useState(false);
+    const [yearly, setYearly] = useState(false);
+    const navigate = useNavigate();
 
-  const CheckIcon = ({ className }) => (
-    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${className}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-    </svg>
-  );
+    return (
+        <section id="pricing" className="bg-[linear-gradient(180deg,#edf3da_0%,#f5f8ea_100%)] py-24">
+            <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-3xl text-center">
+                    <p className="text-xs font-bold uppercase tracking-[0.26em] text-primary">Pricing</p>
+                    <h2 className="mt-4 font-heading text-4xl font-extrabold leading-tight text-dark sm:text-5xl">
+                        Simple, transparent pricing.
+                    </h2>
+                    <p className="mt-5 text-lg leading-8 text-secondary">
+                        No hidden fees, no confusing packaging. Pick the workflow that matches your team.
+                    </p>
 
-  return (
-    <section id="pricing" className="bg-bg py-24 px-6 md:px-10">
-      {/* Header */}
-      <div className="text-center mb-16 max-w-2xl mx-auto flex flex-col items-center">
-        <div className="bg-dark/10 text-dark rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-6">
-          Simple pricing
-        </div>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-dark leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-          Pay for what you use
-        </h2>
-        <p className="text-sm text-secondary mt-3 leading-relaxed" style={{ fontFamily: 'Inter' }}>
-          No hidden fees. No setup costs. Start free and scale as your business grows.
-        </p>
+                    <div className="mt-8 inline-flex rounded-full border border-[#c8d7bc] bg-white/80 p-1.5 shadow-[0_16px_35px_rgba(55,85,52,0.06)]">
+                        <button type="button" onClick={() => setYearly(false)} className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${!yearly ? 'bg-dark text-white' : 'text-secondary hover:text-dark'}`}>
+                            Monthly
+                        </button>
+                        <button type="button" onClick={() => setYearly(true)} className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${yearly ? 'bg-dark text-white' : 'text-secondary hover:text-dark'}`}>
+                            Yearly
+                            <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-[11px] text-white">-20%</span>
+                        </button>
+                    </div>
+                </div>
 
-        {/* Toggle */}
-        <div className="mt-8 inline-flex bg-card/40 rounded-full p-1 border border-card/60">
-          <button
-            onClick={() => setIsYearly(false)}
-            className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
-              !isYearly ? 'bg-dark text-white shadow-md' : 'text-dark hover:text-dark/70'
-            }`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => setIsYearly(true)}
-            className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
-              isYearly ? 'bg-dark text-white shadow-md' : 'text-dark hover:text-dark/70'
-            }`}
-          >
-            Yearly <span className="ml-1 text-xs text-primary font-bold bg-white/20 px-1.5 rounded-md">-20%</span>
-          </button>
-        </div>
-      </div>
+                <div className="mt-14 grid gap-6 lg:grid-cols-3">
+                    {plans.map((plan) => (
+                        <div
+                            key={plan.name}
+                            className={`relative flex h-full flex-col rounded-[2rem] border p-8 ${
+                                plan.popular
+                                    ? 'border-primary bg-[#0d2419] text-white shadow-[0_25px_70px_rgba(55,85,52,0.22)]'
+                                    : 'border-[#c8d7bc] bg-white/78 text-dark shadow-[0_18px_40px_rgba(55,85,52,0.06)]'
+                            }`}
+                        >
+                            {plan.popular ? (
+                                <span className="absolute left-8 top-0 -translate-y-1/2 rounded-full bg-primary px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white">
+                                    Most popular
+                                </span>
+                            ) : null}
 
-      {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-center">
-        
-        {/* Card 1: Starter */}
-        <div className="bg-white border border-card/60 rounded-2xl p-8 flex flex-col h-full hover:shadow-lg transition-shadow">
-          <h3 className="font-bold text-xl text-dark" style={{ fontFamily: 'Plus Jakarta Sans' }}>Starter</h3>
-          <p className="text-xs text-secondary mt-2 min-h-[32px]">Perfect for small businesses trying out B2B invoicing</p>
-          
-          <div className="mt-6 mb-8 flex items-end">
-            <span className="text-5xl font-extrabold text-dark tracking-tight">₹0</span>
-            <span className="text-sm text-secondary font-medium ml-1 mb-1.5">/month</span>
-          </div>
+                            <div>
+                                <h3 className="font-heading text-3xl font-bold">{plan.name}</h3>
+                                <p className={`mt-3 text-base leading-7 ${plan.popular ? 'text-white/55' : 'text-secondary'}`}>{plan.desc}</p>
+                                <div className="mt-8 flex items-end gap-2">
+                                    <span className="font-heading text-5xl font-extrabold">
+                                        {yearly ? plan.price.yearly : plan.price.monthly}
+                                    </span>
+                                    {plan.price.monthly !== 'Custom' ? (
+                                        <span className={`pb-2 text-sm ${plan.popular ? 'text-white/45' : 'text-secondary'}`}>/mo</span>
+                                    ) : null}
+                                </div>
+                            </div>
 
-          <Link to="/register" className="w-full text-center block bg-card text-dark rounded-xl py-3 font-semibold hover:bg-secondary hover:text-white transition-colors">
-            Get Started Free
-          </Link>
+                            <ul className="mt-8 flex flex-1 flex-col gap-4">
+                                {plan.features.map((feature) => (
+                                    <li key={feature} className="flex items-start gap-3">
+                                        <span className={`mt-1 flex h-5 w-5 items-center justify-center rounded-full ${plan.popular ? 'bg-white/10 text-[#b8ecb8]' : 'bg-primary/10 text-primary'}`}>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                                <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </span>
+                                        <span className={`text-base ${plan.popular ? 'text-white/75' : 'text-secondary'}`}>{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
 
-          <div className="mt-8 flex flex-col gap-3.5">
-            {[
-              "Up to 50 invoices/month",
-              "1 seller account",
-              "1 buyer account",
-              "Basic GST summary",
-              "Email support"
-            ].map((feature, i) => (
-              <div key={i} className="flex gap-3 text-sm text-dark font-medium">
-                <CheckIcon className="text-primary" />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Card 2: Growth (Featured) */}
-        <div className="bg-dark border-2 border-primary rounded-2xl p-8 flex flex-col relative md:scale-105 shadow-2xl z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
-            Most Popular
-          </div>
-          
-          <h3 className="font-bold text-xl text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>Growth</h3>
-          <p className="text-xs text-secondary/90 mt-2 min-h-[32px]">For growing businesses with regular B2B transactions</p>
-          
-          <div className="mt-6 mb-8 flex items-end">
-            <span className="text-5xl font-extrabold text-white tracking-tight">
-              {isYearly ? '₹1,199' : '₹1,499'}
-            </span>
-            <span className="text-sm text-secondary font-medium ml-1 mb-1.5">/month</span>
-          </div>
-
-          <Link to="/register" className="w-full text-center block bg-primary text-white rounded-xl py-3 font-semibold hover:bg-primary/80 hover:shadow-lg hover:shadow-primary/20 transition-all">
-            Start Free Trial
-          </Link>
-
-          <div className="mt-8 flex flex-col gap-3.5">
-            {[
-              "Unlimited invoices",
-              "5 seller accounts",
-              "Unlimited buyer accounts",
-              "Full GST dashboard with charts",
-              "Invoice request feature",
-              "Payment tracking",
-              "Priority support"
-            ].map((feature, i) => (
-              <div key={i} className="flex gap-3 text-sm text-card font-medium">
-                <CheckIcon className="text-primary" />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Card 3: Enterprise */}
-        <div className="bg-white border border-card/60 rounded-2xl p-8 flex flex-col h-full hover:shadow-lg transition-shadow">
-          <h3 className="font-bold text-xl text-dark" style={{ fontFamily: 'Plus Jakarta Sans' }}>Enterprise</h3>
-          <p className="text-xs text-secondary mt-2 min-h-[32px]">For large organizations with complex invoice workflows</p>
-          
-          <div className="mt-6 mb-8 flex items-end">
-            <span className="text-5xl font-extrabold text-dark tracking-tight">Custom</span>
-          </div>
-
-          <Link to="/register" className="w-full text-center block bg-dark text-white rounded-xl py-3 font-semibold hover:bg-primary transition-colors">
-            Contact Sales
-          </Link>
-
-          <div className="mt-8 flex flex-col gap-3.5">
-            {[
-              "Everything in Growth",
-              "Dedicated account manager",
-              "Custom GSTIN configurations",
-              "API access",
-              "SSO and team management",
-              "SLA guarantee"
-            ].map((feature, i) => (
-              <div key={i} className="flex gap-3 text-sm text-dark font-medium">
-                <CheckIcon className="text-primary" />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-      {/* Footer Text */}
-      <div className="mt-12 text-center text-xs font-medium text-secondary">
-        All plans include 14-day free trial. No credit card required.
-      </div>
-    </section>
-  );
+                            <div className="mt-8">
+                                <Button variant={plan.popular ? 'primary' : 'dark'} className="w-full" onClick={() => navigate('/login')}>
+                                    {plan.cta}
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
 }

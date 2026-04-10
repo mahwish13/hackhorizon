@@ -1,70 +1,26 @@
-const row1 = [
-  'Tata Ventures', 'Infosys Supply', 'Wipro Traders', 'Reliance B2B', 'HCL Commerce',
-  'Mahindra Goods', 'Birla Exports', 'HDFC Trade', 'Bajaj Suppliers', 'Sun Pharma B2B'
+const logos = [
+    'Zoho Books', 'Tally ERP', 'QuickBooks', 'FreshBooks', 'Wave', 'Xero',
+    'Razorpay', 'Stripe', 'PayU', 'ClearTax', 'Instamojo', 'BillDesk',
 ];
-
-const row2 = [
-  'Adani Logistics', 'Zomato Business', 'Swiggy Partners', 'Flipkart Wholesale',
-  'Nykaa Trade', 'Meesho Sellers', 'Razorpay Biz', 'Zepto Commerce', 'Groww Business', 'Paytm B2B'
-];
-
-// Duplicate the arrays for a seamless loop
-const row1Duplicated = [...row1, ...row1];
-const row2Duplicated = [...row2, ...row2];
 
 export default function Marquee() {
-  return (
-    <section className="bg-dark py-10 overflow-hidden border-y border-white/5">
-      <p className="text-xs font-medium text-secondary text-center mb-6 uppercase tracking-widest">
-        Trusted by leading businesses across India
-      </p>
-
-      {/* Row 1: Scrolls Left */}
-      <div className="relative w-full flex overflow-hidden mb-6 group">
-        <div 
-          className="flex w-max gap-12 group-hover:[animation-play-state:paused]" 
-          style={{ animation: 'scrollLeft 35s linear infinite' }}
-        >
-          {row1Duplicated.map((name, i) => (
-            <div
-              key={`r1-${i}`}
-              className="font-semibold text-sm text-card px-6 py-2 border border-white/10 rounded-full whitespace-nowrap hover:border-secondary hover:text-white transition-all cursor-default shadow-sm"
-              style={{ fontFamily: 'Plus Jakarta Sans' }}
-            >
-              {name}
+    return (
+        <section className="overflow-hidden border-y border-white/8 bg-[#081d14] py-6">
+            <div className="mx-auto mb-4 w-full max-w-7xl px-5 text-center sm:px-6 lg:px-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/35">
+                    Trusted integrations and partners
+                </p>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Row 2: Scrolls Right */}
-      <div className="relative w-full flex overflow-hidden group">
-        <div 
-          className="flex w-max gap-12 group-hover:[animation-play-state:paused]" 
-          style={{ animation: 'scrollRight 35s linear infinite' }}
-        >
-          {row2Duplicated.map((name, i) => (
-            <div
-              key={`r2-${i}`}
-              className="font-semibold text-sm text-card px-6 py-2 border border-white/10 rounded-full whitespace-nowrap hover:border-secondary hover:text-white transition-all cursor-default shadow-sm"
-              style={{ fontFamily: 'Plus Jakarta Sans' }}
-            >
-              {name}
+            <div className="marquee-track flex w-max items-center gap-10 text-white/45">
+                {[...logos, ...logos, ...logos].map((logo, index) => (
+                    <div key={`${logo}-${index}`} className="flex items-center gap-3 whitespace-nowrap">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/8 bg-white/8 text-sm font-bold text-white/70">
+                            {logo[0]}
+                        </div>
+                        <span className="text-sm font-medium">{logo}</span>
+                    </div>
+                ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes scrollLeft {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-        @keyframes scrollRight {
-          from { transform: translateX(-50%); }
-          to { transform: translateX(0); }
-        }
-      `}</style>
-    </section>
-  );
+        </section>
+    );
 }
