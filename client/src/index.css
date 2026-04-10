@@ -44,7 +44,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
   background-color: #FDFBF7;
-  color: #0A2518;
+  color: #091a12;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -57,7 +57,7 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: #FFFFFF; }
 ::-webkit-scrollbar-thumb { background: #D1CFC2; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #076349; }
+::-webkit-scrollbar-thumb:hover { background: #1a7158; }
 
 /* ─── Global Keyframes ───────────────────────────────────── */
 @keyframes fadeUp {
