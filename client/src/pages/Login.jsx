@@ -1,234 +1,200 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 export default function Login() {
-    const navigate = useNavigate();
-    const { user } = useAuth();
-    const backendOrigin = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/api\/?$/, '');
+  const [activeRole, setActiveRole] = useState('seller');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [error, setError] = useState('');
 
-    const [role, setRole] = useState('seller');
-    const [form, setForm] = useState({ email: '', password: '' });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-    useEffect(() => {
-        if (user) {
-            navigate(user.role === 'buyer' ? '/buyer-dashboard' : '/seller-dashboard', { replace: true });
-        }
-    }, [navigate, user]);
+  const handleGoogleLogin = () => {
+    setError('');
+    setIsGoogleLoading(true);
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    window.location.href = `${apiBaseUrl}/auth/google`;
+  };
 
-    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      const { user, token } = res.data.data;
+      login(user, token);
+      navigate(`/${user.role}/dashboard`, { replace: true });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0a0f0d] relative overflow-hidden">
+      {/* bg blobs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-15%] left-[-10%] w-[600px] h-[600px] bg-[#4ade80]/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-[#4ade80]/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: 'linear-gradient(#4ade80 1px, transparent 1px), linear-gradient(90deg, #4ade80 1px, transparent 1px)', backgroundSize: '48px 48px' }}
+        />
+      </div>
 
-        try {
-            window.location.href = `${backendOrigin}/api/auth/google?role=${role}`;
-        } catch (err) {
-            console.error('Failed to start authentication:', err);
-            setError('Could not open secure sign-in. Please try again.');
-            setLoading(false);
-        }
-    };
-
-    const demoLogin = (demoRole) => {
-        setRole(demoRole);
-        setError('');
-        setForm({
-            email: demoRole === 'seller' ? 'seller@invoicesync.io' : 'buyer@invoicesync.io',
-            password: '••••••••',
-        });
-    };
-
-    const highlights = [
-        { label: 'Invoice match rate', value: '99.2%' },
-        { label: 'GST sync latency', value: '< 2 min' },
-        { label: 'Teams onboarded', value: '540+' },
-    ];
-
-    return (
-        <div className="relative min-h-screen overflow-hidden bg-[#071b12] text-white">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(107,144,113,0.25),_transparent_32%),radial-gradient(circle_at_80%_20%,_rgba(174,195,176,0.12),_transparent_22%),linear-gradient(160deg,_#071b12_0%,_#0b2a1c_50%,_#06150f_100%)]" />
-            <div className="dynamic-float absolute -left-24 top-24 h-72 w-72 rounded-full bg-primary/20 blur-[120px]" />
-            <div className="dynamic-float-delayed absolute right-0 top-0 h-80 w-80 rounded-full bg-secondary/15 blur-[140px]" />
-            <div className="dynamic-float-slow absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-card/10 blur-[120px]" />
-
-            <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-8 lg:px-10">
-                <div className="flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-xl">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p className="font-heading text-xl font-bold">InvoiceSync</p>
-                            <p className="text-xs uppercase tracking-[0.28em] text-white/35">Workspace access</p>
-                        </div>
-                    </Link>
-
-                    <Link to="/" className="rounded-full border border-white/10 px-4 py-2 text-sm text-white/70 transition hover:border-white/20 hover:text-white">
-                        Back to home
-                    </Link>
-                </div>
-
-                <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr]">
-                    <section className="hidden lg:flex lg:flex-col lg:justify-center lg:pr-6">
-                        <div className="max-w-2xl">
-                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#d8e7d7] backdrop-blur-xl">
-                                <span className="h-2 w-2 rounded-full bg-[#9ad39e]" />
-                                Live collaboration layer
-                            </div>
-                            <h1 className="max-w-3xl font-heading text-5xl font-extrabold leading-[0.98] text-white xl:text-6xl">
-                                A faster, smarter workspace for B2B invoicing.
-                            </h1>
-                            <p className="mt-6 max-w-xl text-lg leading-8 text-white/66">
-                                Centralize vendor requests, automate GST visibility, and keep every approval moving with a more responsive finance cockpit.
-                            </p>
-                        </div>
-
-                        <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                            {highlights.map(({ label, value }) => (
-                                <div key={label} className="rounded-3xl border border-white/10 bg-white/7 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-2xl">
-                                    <p className="font-heading text-3xl font-extrabold text-white">{value}</p>
-                                    <p className="mt-2 text-sm text-white/50">{label}</p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="relative mt-10 max-w-2xl rounded-[2rem] border border-white/10 bg-white/6 p-6 shadow-[0_35px_100px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-                            <div className="dynamic-float absolute -right-8 -top-8 w-44 rounded-[1.6rem] border border-[#8cb78f]/25 bg-[#112d1e]/85 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
-                                <p className="text-xs uppercase tracking-[0.22em] text-[#97bf97]">This week</p>
-                                <p className="mt-2 font-heading text-3xl font-bold text-white">Rs4.8Cr</p>
-                                <p className="mt-1 text-sm text-white/45">Invoices reconciled</p>
-                            </div>
-                            <p className="text-xs uppercase tracking-[0.26em] text-white/35">Ops Snapshot</p>
-                            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-2xl border border-white/8 bg-[#0f261a]/80 p-4">
-                                    <p className="text-sm text-white/45">Approval queue</p>
-                                    <p className="mt-3 font-heading text-4xl font-bold">18</p>
-                                    <p className="mt-2 text-sm text-[#9bd29f]">6 urgent vendor requests in motion</p>
-                                </div>
-                                <div className="rounded-2xl border border-white/8 bg-[#0f261a]/80 p-4">
-                                    <p className="text-sm text-white/45">GST watch</p>
-                                    <p className="mt-3 font-heading text-4xl font-bold">24h</p>
-                                    <p className="mt-2 text-sm text-[#d7e8d6]">Till next return review checkpoint</p>
-                                </div>
-                            </div>
-                            <div className="mt-5 flex items-center gap-3 text-sm text-white/50">
-                                <span className="h-2.5 w-2.5 rounded-full bg-[#97bf97] shadow-[0_0_0_6px_rgba(151,191,151,0.14)]" />
-                                Dynamic workspace signals update in real time
-                            </div>
-                        </div>
-                    </section>
-
-                    <section className="mx-auto flex w-full max-w-xl items-center">
-                        <div className="w-full rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-[0_35px_100px_rgba(0,0,0,0.4)] backdrop-blur-2xl sm:p-8">
-                            <div className="mb-7">
-                                <p className="text-sm uppercase tracking-[0.24em] text-white/35">Access your workspace</p>
-                                <h2 className="mt-3 font-heading text-4xl font-extrabold text-white">Welcome back</h2>
-                                <p className="mt-2 text-base text-white/50">Sign in to your InvoiceSync workspace</p>
-                            </div>
-
-                            <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl border border-white/8 bg-black/10 p-1.5">
-                                {['seller', 'buyer'].map((r) => (
-                                    <button
-                                        key={r}
-                                        type="button"
-                                        onClick={() => setRole(r)}
-                                        className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${role === r ? 'bg-primary text-white shadow-[0_8px_30px_rgba(55,85,52,0.45)]' : 'text-white/55 hover:text-white'}`}
-                                    >
-                                        {r === 'seller' ? 'Seller' : 'Buyer'}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="mb-6 grid grid-cols-2 gap-2">
-                                {['seller', 'buyer'].map((r) => (
-                                    <button
-                                        key={r}
-                                        type="button"
-                                        onClick={() => demoLogin(r)}
-                                        className="rounded-xl border border-white/8 bg-white/4 px-4 py-2.5 text-sm text-white/50 transition hover:border-white/15 hover:bg-white/8 hover:text-white/80"
-                                    >
-                                        Try demo {r}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {error ? (
-                                <div className="mb-5 rounded-2xl border border-red-500/35 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                                    {error}
-                                </div>
-                            ) : null}
-
-                            <form onSubmit={handleSubmit} className="space-y-5">
-                                <div>
-                                    <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.24em] text-white/42">
-                                        Email address
-                                    </label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        value={form.email}
-                                        onChange={handleChange}
-                                        required
-                                        placeholder="you@company.com"
-                                        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-white outline-none transition placeholder:text-white/18 focus:border-[#98c295] focus:bg-white/7"
-                                    />
-                                </div>
-
-                                <div>
-                                    <div className="mb-2 flex items-center justify-between">
-                                        <label className="block text-xs font-semibold uppercase tracking-[0.24em] text-white/42">
-                                            Password
-                                        </label>
-                                        <button type="button" className="text-sm text-secondary transition hover:text-card">
-                                            Forgot password?
-                                        </button>
-                                    </div>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        value={form.password}
-                                        onChange={handleChange}
-                                        required
-                                        placeholder="Enter your password"
-                                        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-white outline-none transition placeholder:text-white/18 focus:border-[#98c295] focus:bg-white/7"
-                                    />
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full rounded-2xl bg-primary px-5 py-3.5 font-heading text-xl font-bold text-white shadow-[0_16px_40px_rgba(55,85,52,0.42)] transition hover:bg-[#436840] disabled:cursor-not-allowed disabled:opacity-80"
-                                >
-                                    {loading ? 'Opening secure sign-in...' : `Sign in as ${role === 'seller' ? 'Seller' : 'Buyer'}`}
-                                </button>
-                            </form>
-
-                            <p className="mt-4 text-sm text-white/42">
-                                Secure sign-in continues through your organization account after this step.
-                            </p>
-
-                            <p className="mt-3 text-center text-sm text-white/32">
-                                Don&apos;t have an account?{' '}
-                                <button type="button" className="font-medium text-secondary transition hover:text-card">
-                                    Request access
-                                </button>
-                            </p>
-                        </div>
-                    </section>
-                </div>
-
-                <p className="text-center text-sm text-white/24">
-                    © 2026 InvoiceSync. Built for finance teams that move fast.
-                </p>
-            </div>
+      <div className="w-full max-w-[420px] relative z-10 flex flex-col items-center">
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-10">
+          <div className="w-9 h-9 bg-[#4ade80] rounded-xl flex items-center justify-center font-bold text-[14px] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/30">IS</div>
+          <span className="text-white font-bold text-xl tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>InvoiceSync</span>
         </div>
-    );
+
+        <div className="w-full bg-[#111a15]/80 backdrop-blur-xl border border-[#243124] rounded-[2rem] p-8 shadow-2xl flex flex-col text-center">
+
+          {/* Role Toggle */}
+          <div className="flex w-full bg-[#111a15] rounded-2xl p-1 mb-8 border border-[#243124]">
+            {['seller', 'buyer'].map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setActiveRole(r)}
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 capitalize ${
+                  activeRole === r
+                    ? 'bg-[#4ade80] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/25'
+                    : 'text-[#6b8f76] hover:text-white'
+                }`}
+                style={{ fontFamily: 'Plus Jakarta Sans' }}
+              >
+                {r === 'seller' ? 'Seller' : 'Buyer'}
+              </button>
+            ))}
+          </div>
+
+          {/* Heading */}
+          <h2 className="font-extrabold text-2xl text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+            Sign in as {activeRole === 'seller' ? 'Seller' : 'Buyer'}
+          </h2>
+          <p className="text-sm text-[#6b8f76] mb-8 leading-relaxed">
+            {activeRole === 'seller'
+              ? 'Access your invoice dashboard and track payments'
+              : 'Review and validate invoices from your suppliers'}
+          </p>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-left">
+            {/* Email */}
+            <div>
+              <label className="block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em] mb-2">
+                Email address
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                className="w-full bg-[#111a15] border border-[#243124] rounded-xl px-4 py-3.5 text-sm text-white placeholder-[#3d5945] outline-none focus:border-[#4ade80]/50 focus:ring-2 focus:ring-[#4ade80]/10 transition-all"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em]">Password</label>
+                <Link to="/forgot-password" className="text-xs font-semibold text-[#4ade80] hover:text-white transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-[#111a15] border border-[#243124] rounded-xl px-4 pr-12 py-3.5 text-sm text-white placeholder-[#3d5945] outline-none focus:border-[#4ade80]/50 focus:ring-2 focus:ring-[#4ade80]/10 transition-all tracking-widest"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#3d5945] hover:text-[#6b8f76] transition-colors"
+                >
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium px-4 py-3 rounded-xl">
+                {error}
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-[#4ade80] hover:bg-[#86efac] text-[#0a0f0d] rounded-xl py-4 font-bold text-sm mt-1 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shadow-xl shadow-[#4ade80]/20 hover:shadow-[#4ade80]/35"
+              style={{ fontFamily: 'Plus Jakarta Sans' }}
+            >
+              {isLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-[#0a0f0d]/80 border-t-transparent rounded-full spin" />
+                  Authenticating...
+                </>
+              ) : (
+                `Sign in as ${activeRole === 'seller' ? 'Seller' : 'Buyer'}`
+              )}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="my-7 flex items-center gap-4">
+            <div className="flex-1 h-px bg-[#243124]" />
+            <span className="text-xs text-[#3d5945] font-bold uppercase tracking-wider">or</span>
+            <div className="flex-1 h-px bg-[#243124]" />
+          </div>
+
+          {/* Google */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading || isGoogleLoading}
+            className="w-full bg-[#111a15] border border-[#243124] hover:border-[#2e4030] hover:bg-[#192319] text-white rounded-xl py-3.5 font-semibold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.23 3.6l6.85-6.85C35.9 2.38 30.37 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.36 13.98 17.73 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.5 24.5c0-1.65-.15-3.23-.42-4.75H24v9h12.67c-.55 2.96-2.2 5.48-4.67 7.17l7.2 5.59C43.95 37.05 46.5 31.3 46.5 24.5z"/>
+              <path fill="#FBBC05" d="M10.54 28.59a14.5 14.5 0 010-9.18l-7.98-6.19A23.96 23.96 0 000 24c0 3.87.92 7.53 2.56 10.78l7.98-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.37 0 11.72-2.1 15.63-5.7l-7.2-5.59c-2 1.34-4.57 2.14-8.43 2.14-6.27 0-11.64-4.48-13.46-10.41l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            {isGoogleLoading ? 'Redirecting to Google...' : 'Continue with Google'}
+          </button>
+
+          <p className="text-center text-sm text-[#6b8f76] mt-8">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-[#4ade80] font-bold hover:text-white transition-colors">
+              Register here
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

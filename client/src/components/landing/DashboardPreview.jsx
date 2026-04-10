@@ -1,90 +1,73 @@
+import { useState } from 'react';
+
 export default function DashboardPreview() {
-    return (
-        <section className="bg-[#081d14] py-24 text-white">
-            <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-5 sm:px-6 lg:grid-cols-[0.88fr_1.12fr] lg:px-8">
-                <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bb28c]">Control tower</p>
-                    <h2 className="mt-4 font-heading text-4xl font-extrabold leading-tight sm:text-5xl">
-                        A dashboard built for clarity.
-                    </h2>
-                    <p className="mt-5 max-w-xl text-lg leading-8 text-white/58">
-                        Track every invoice, every rupee, and every approval state in one live view instead of juggling spreadsheets and follow-up messages.
-                    </p>
-                    <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                        {[
-                            ['Multi-party approval flow', 'Buyer actions, seller updates, and comments stay in one thread.'],
-                            ['Live GST visibility', 'See collected, payable, and overdue status at a glance.'],
-                        ].map(([title, text]) => (
-                            <div key={title} className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-                                <h3 className="font-heading text-lg font-bold">{title}</h3>
-                                <p className="mt-2 text-sm leading-7 text-white/48">{text}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+  const [imgError, setImgError] = useState(false);
 
-                <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5 shadow-[0_30px_120px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-                    <div className="mb-5 flex items-center justify-between">
-                        <div className="flex gap-2">
-                            <span className="h-3 w-3 rounded-full bg-[#ff6b6b]" />
-                            <span className="h-3 w-3 rounded-full bg-[#f4cf57]" />
-                            <span className="h-3 w-3 rounded-full bg-[#65d07d]" />
-                        </div>
-                        <div className="rounded-full border border-white/8 bg-white/6 px-4 py-1.5 text-xs text-white/35">
-                            app.invoicesync.io/dashboard
-                        </div>
-                    </div>
+  return (
+    <section className="bg-[#0a0f0d] py-24 px-6 md:px-10 text-center relative overflow-hidden" id="preview">
+      {/* bg glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#4ade80]/5 rounded-full blur-[120px] pointer-events-none" />
 
-                    <div className="grid gap-4 sm:grid-cols-4">
-                        {[
-                            ['Total revenue', 'Rs8.4L', '+12.5%'],
-                            ['Paid', '142', '+8'],
-                            ['Pending', '23', '-3'],
-                            ['Overdue', '5', '+2'],
-                        ].map(([label, value, delta]) => (
-                            <div key={label} className="rounded-2xl border border-white/8 bg-[#0d2419] p-4">
-                                <p className="text-xs uppercase tracking-[0.2em] text-white/30">{label}</p>
-                                <p className="mt-3 font-heading text-3xl font-bold">{value}</p>
-                                <p className="mt-1 text-sm text-[#9fc99f]">{delta} this month</p>
-                            </div>
-                        ))}
-                    </div>
+      <div className="relative max-w-5xl mx-auto">
+        {/* Section label */}
+        <div className="inline-flex items-center gap-2 border border-[#4ade80]/20 bg-[#4ade80]/8 text-[#4ade80] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-6">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" />
+          Product Preview
+        </div>
 
-                    <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/8">
-                        <div className="grid grid-cols-[0.85fr_1.35fr_1fr_0.85fr_0.9fr] bg-[#10281c] px-5 py-3 text-xs uppercase tracking-[0.22em] text-white/30">
-                            <span>Invoice</span>
-                            <span>Client</span>
-                            <span>Amount</span>
-                            <span>Status</span>
-                            <span>Date</span>
-                        </div>
-                        {[
-                            ['INV-2401', 'Reliance Industries', 'Rs1,24,000', 'Paid', '10 Apr 2026'],
-                            ['INV-2402', 'Tata Consultancy', 'Rs87,500', 'Pending', '09 Apr 2026'],
-                            ['INV-2403', 'Infosys Ltd.', 'Rs2,03,400', 'Overdue', '05 Apr 2026'],
-                            ['INV-2404', 'Wipro Technologies', 'Rs56,200', 'Draft', '03 Apr 2026'],
-                        ].map(([invoice, client, amount, status, date]) => (
-                            <div key={invoice} className="grid grid-cols-[0.85fr_1.35fr_1fr_0.85fr_0.9fr] items-center border-t border-white/6 bg-[#0a2016] px-5 py-4 text-sm">
-                                <span className="font-mono text-white/70">{invoice}</span>
-                                <span className="font-medium text-white">{client}</span>
-                                <span className="text-white/72">{amount}</span>
-                                <span className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${
-                                    status === 'Paid'
-                                        ? 'bg-[#1c4e30] text-[#b8ecb8]'
-                                        : status === 'Pending'
-                                            ? 'bg-[#4a4317] text-[#f5d76c]'
-                                            : status === 'Overdue'
-                                                ? 'bg-[#4f2020] text-[#ff9b9b]'
-                                                : 'bg-white/8 text-white/55'
-                                }`}>
-                                    {status}
-                                </span>
-                                <span className="text-white/42">{date}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <h2
+          className="font-extrabold text-[clamp(1.8rem,4vw,3rem)] text-white mb-4 leading-tight"
+          style={{ fontFamily: 'Plus Jakarta Sans' }}
+        >
+          Everything in one view
+        </h2>
+        <p className="text-[#6b8f76] text-base max-w-lg mx-auto leading-relaxed mb-14">
+          A unified dashboard for sellers and buyers&mdash;real-time invoice tracking, GST summaries, and payment status at a glance.
+        </p>
+
+        {/* Browser Shell */}
+        <div className="relative rounded-[1.75rem] border border-[#243124] bg-[#111a15] p-1.5 shadow-[0_0_80px_rgba(74,222,128,0.07)] hover:shadow-[0_0_120px_rgba(74,222,128,0.12)] transition-shadow duration-500">
+
+          {/* Glow ring */}
+          <div className="absolute inset-0 rounded-[1.75rem] border border-[#4ade80]/10 pointer-events-none" />
+
+          {/* Browser top bar */}
+          <div className="flex items-center gap-2 px-5 py-3.5">
+            <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+            <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+            <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+            <div className="flex-1 max-w-xs mx-auto h-6 rounded-full bg-white/5 border border-white/5 flex items-center px-3">
+              <span className="text-[10px] text-[#3d5945] font-mono select-none">app.invoicesync.in/seller/dashboard</span>
             </div>
-        </section>
-    );
+            <div className="w-[52px]" />
+          </div>
+
+          {/* Viewport */}
+          <div className="relative rounded-[1.25rem] overflow-hidden bg-[#0f1a12] aspect-video w-full flex items-center justify-center">
+            {!imgError ? (
+              <img
+                src="/dashboard-preview.png"
+                alt="InvoiceSync Dashboard Screenshot"
+                className="w-full h-full object-cover object-top"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="flex flex-col items-center gap-3">
+                {/* Fake dashboard skeleton */}
+                <div className="w-full px-6 max-w-2xl">
+                  <div className="grid grid-cols-4 gap-3 mb-4">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="h-16 rounded-xl bg-[#192319] border border-[#243124] animate-pulse" />
+                    ))}
+                  </div>
+                  <div className="h-40 rounded-xl bg-[#192319] border border-[#243124] animate-pulse" />
+                </div>
+                <p className="text-[#3d5945] text-xs font-medium mt-2">Dashboard Preview Coming Soon</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

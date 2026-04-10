@@ -1,112 +1,161 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Button from '../shared/Button';
-
-const plans = [
-    {
-        name: 'Starter',
-        price: { monthly: 'Rs999', yearly: 'Rs799' },
-        desc: 'For freelancers and lean teams getting started.',
-        features: ['Up to 50 invoices / month', '2 team members', 'GST computation', 'PDF export', 'Email support'],
-        cta: 'Get Started',
-        popular: false,
-    },
-    {
-        name: 'Growth',
-        price: { monthly: 'Rs2,499', yearly: 'Rs1,999' },
-        desc: 'For growing businesses that need collaboration and visibility.',
-        features: ['Unlimited invoices', '10 team members', 'Buyer collaboration portal', 'Payment integrations', 'Analytics dashboard', 'Priority support'],
-        cta: 'Start Free Trial',
-        popular: true,
-    },
-    {
-        name: 'Enterprise',
-        price: { monthly: 'Custom', yearly: 'Custom' },
-        desc: 'For teams with compliance, security, and integration needs.',
-        features: ['Unlimited everything', 'Custom roles and permissions', 'ERP integrations', 'Dedicated account manager', 'SLA guarantee', 'SSO and audit logs'],
-        cta: 'Contact Sales',
-        popular: false,
-    },
-];
+import { Link } from 'react-router-dom';
 
 export default function Pricing() {
-    const [yearly, setYearly] = useState(false);
-    const navigate = useNavigate();
+  const [isYearly, setIsYearly] = useState(false);
 
-    return (
-        <section id="pricing" className="bg-[linear-gradient(180deg,#edf3da_0%,#f5f8ea_100%)] py-24">
-            <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-xs font-bold uppercase tracking-[0.26em] text-primary">Pricing</p>
-                    <h2 className="mt-4 font-heading text-4xl font-extrabold leading-tight text-dark sm:text-5xl">
-                        Simple, transparent pricing.
-                    </h2>
-                    <p className="mt-5 text-lg leading-8 text-secondary">
-                        No hidden fees, no confusing packaging. Pick the workflow that matches your team.
-                    </p>
+  const CheckIcon = () => (
+    <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#4ade80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+    </svg>
+  );
 
-                    <div className="mt-8 inline-flex rounded-full border border-[#c8d7bc] bg-white/80 p-1.5 shadow-[0_16px_35px_rgba(55,85,52,0.06)]">
-                        <button type="button" onClick={() => setYearly(false)} className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${!yearly ? 'bg-dark text-white' : 'text-secondary hover:text-dark'}`}>
-                            Monthly
-                        </button>
-                        <button type="button" onClick={() => setYearly(true)} className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${yearly ? 'bg-dark text-white' : 'text-secondary hover:text-dark'}`}>
-                            Yearly
-                            <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-[11px] text-white">-20%</span>
-                        </button>
-                    </div>
+  const plans = [
+    {
+      name: 'Starter',
+      desc: 'Perfect for small businesses trying out B2B invoicing',
+      monthlyPrice: '₹0',
+      yearlyPrice: '₹0',
+      cta: 'Get Started Free',
+      ctaLink: '/register',
+      featured: false,
+      features: ['Up to 50 invoices/month', '1 seller account', '1 buyer account', 'Basic GST summary', 'Email support']
+    },
+    {
+      name: 'Growth',
+      desc: 'For growing businesses with regular B2B transactions',
+      monthlyPrice: '₹1,499',
+      yearlyPrice: '₹1,199',
+      cta: 'Start Free Trial',
+      ctaLink: '/register',
+      featured: true,
+      features: ['Unlimited invoices', '5 seller accounts', 'Unlimited buyer accounts', 'Full GST dashboard & charts', 'Invoice request feature', 'Payment tracking', 'Priority support']
+    },
+    {
+      name: 'Enterprise',
+      desc: 'For large organizations with complex invoice workflows',
+      monthlyPrice: 'Custom',
+      yearlyPrice: 'Custom',
+      cta: 'Contact Sales',
+      ctaLink: '/register',
+      featured: false,
+      features: ['Everything in Growth', 'Dedicated account manager', 'Custom GSTIN configurations', 'API access', 'SSO and team management', 'SLA guarantee']
+    }
+  ];
+
+  return (
+    <section id="pricing" className="bg-[#0a0f0d] py-28 px-6 md:px-10 relative overflow-hidden">
+      {/* top glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-[#4ade80]/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto relative">
+
+        {/* Header */}
+        <div className="text-center mb-16 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 border border-[#4ade80]/20 bg-[#4ade80]/8 text-[#4ade80] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" />
+            Simple pricing
+          </div>
+          <h2
+            className="text-[clamp(1.8rem,4vw,2.75rem)] font-extrabold text-white leading-tight mb-4"
+            style={{ fontFamily: 'Plus Jakarta Sans' }}
+          >
+            Pay for what you use
+          </h2>
+          <p className="text-[#6b8f76] text-base max-w-md mx-auto leading-relaxed mb-10">
+            No hidden fees. No setup costs. Start free and scale as your business grows.
+          </p>
+
+          {/* Toggle */}
+          <div className="inline-flex bg-[#111a15] rounded-full p-1 border border-[#243124]">
+            <button
+              onClick={() => setIsYearly(false)}
+              className={`rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                !isYearly
+                  ? 'bg-[#4ade80] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/25'
+                  : 'text-[#6b8f76] hover:text-white'
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setIsYearly(true)}
+              className={`rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+                isYearly
+                  ? 'bg-[#4ade80] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/25'
+                  : 'text-[#6b8f76] hover:text-white'
+              }`}
+            >
+              Yearly
+              <span className="text-[10px] font-extrabold bg-[#4ade80]/20 text-[#4ade80] px-1.5 py-0.5 rounded-md border border-[#4ade80]/30 leading-none">
+                -20%
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              className={`relative flex flex-col rounded-2xl p-8 border transition-all duration-300 ${
+                plan.featured
+                  ? 'bg-[#111a15] border-[#4ade80]/40 shadow-2xl shadow-[#4ade80]/10 md:scale-[1.04] z-10'
+                  : 'bg-[#111a15] border-[#243124] hover:border-[#2e4030]'
+              }`}
+            >
+              {plan.featured && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#4ade80] text-[#0a0f0d] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-[#4ade80]/30 whitespace-nowrap">
+                  Most Popular
                 </div>
+              )}
 
-                <div className="mt-14 grid gap-6 lg:grid-cols-3">
-                    {plans.map((plan) => (
-                        <div
-                            key={plan.name}
-                            className={`relative flex h-full flex-col rounded-[2rem] border p-8 ${
-                                plan.popular
-                                    ? 'border-primary bg-[#0d2419] text-white shadow-[0_25px_70px_rgba(55,85,52,0.22)]'
-                                    : 'border-[#c8d7bc] bg-white/78 text-dark shadow-[0_18px_40px_rgba(55,85,52,0.06)]'
-                            }`}
-                        >
-                            {plan.popular ? (
-                                <span className="absolute left-8 top-0 -translate-y-1/2 rounded-full bg-primary px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white">
-                                    Most popular
-                                </span>
-                            ) : null}
+              <h3 className="font-bold text-xl text-white mb-1 text-center" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                {plan.name}
+              </h3>
+              <p className="text-xs text-[#6b8f76] leading-relaxed min-h-[36px] mb-6 text-center">{plan.desc}</p>
 
-                            <div>
-                                <h3 className="font-heading text-3xl font-bold">{plan.name}</h3>
-                                <p className={`mt-3 text-base leading-7 ${plan.popular ? 'text-white/55' : 'text-secondary'}`}>{plan.desc}</p>
-                                <div className="mt-8 flex items-end gap-2">
-                                    <span className="font-heading text-5xl font-extrabold">
-                                        {yearly ? plan.price.yearly : plan.price.monthly}
-                                    </span>
-                                    {plan.price.monthly !== 'Custom' ? (
-                                        <span className={`pb-2 text-sm ${plan.popular ? 'text-white/45' : 'text-secondary'}`}>/mo</span>
-                                    ) : null}
-                                </div>
-                            </div>
+              <div className="flex items-end justify-center gap-1 mb-8">
+                <span
+                  className="text-[2.75rem] font-extrabold text-white leading-none tracking-tight"
+                  style={{ fontFamily: 'Plus Jakarta Sans' }}
+                >
+                  {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
+                </span>
+                {plan.monthlyPrice !== 'Custom' && (
+                  <span className="text-sm text-[#6b8f76] mb-1">/month</span>
+                )}
+              </div>
 
-                            <ul className="mt-8 flex flex-1 flex-col gap-4">
-                                {plan.features.map((feature) => (
-                                    <li key={feature} className="flex items-start gap-3">
-                                        <span className={`mt-1 flex h-5 w-5 items-center justify-center rounded-full ${plan.popular ? 'bg-white/10 text-[#b8ecb8]' : 'bg-primary/10 text-primary'}`}>
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                                                <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </span>
-                                        <span className={`text-base ${plan.popular ? 'text-white/75' : 'text-secondary'}`}>{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
+              <Link
+                to={plan.ctaLink}
+                className={`w-full text-center block rounded-xl py-3.5 text-sm font-bold transition-all duration-300 mb-8 ${
+                  plan.featured
+                    ? 'bg-[#4ade80] text-[#0a0f0d] hover:bg-[#86efac] shadow-lg shadow-[#4ade80]/25 hover:shadow-[#4ade80]/40'
+                    : 'bg-[#192319] text-white border border-[#2e4030] hover:border-[#4ade80]/30 hover:bg-[#243124]'
+                }`}
+                style={{ fontFamily: 'Plus Jakarta Sans' }}
+              >
+                {plan.cta}
+              </Link>
 
-                            <div className="mt-8">
-                                <Button variant={plan.popular ? 'primary' : 'dark'} className="w-full" onClick={() => navigate('/login')}>
-                                    {plan.cta}
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+              <div className="flex flex-col items-center gap-3.5">
+                {plan.features.map((feature, i) => (
+                  <div key={i} className="flex gap-2 text-sm items-center text-center">
+                    <CheckIcon />
+                    <span className={plan.featured ? 'text-[#e8f5ec]' : 'text-[#6b8f76]'}>{feature}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-        </section>
-    );
+          ))}
+        </div>
+
+        <div className="mt-12 text-center text-xs text-[#3d5945] font-semibold tracking-wide">
+          All plans include a 14-day free trial. No credit card required.
+        </div>
+      </div>
+    </section>
+  );
 }

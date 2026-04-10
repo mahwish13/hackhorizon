@@ -28,16 +28,8 @@ export default function Register() {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-
     try {
-      const res = await api.post('/auth/register', {
-        name,
-        email,
-        password,
-        role: activeRole,
-        gstin,
-      });
-
+      const res = await api.post('/auth/register', { name, email, password, role: activeRole, gstin });
       const { user, token } = res.data.data;
       login(user, token);
       navigate(`/${user.role}/dashboard`, { replace: true });
@@ -48,115 +40,77 @@ export default function Register() {
     }
   };
 
+  const fields = [
+    { label: 'Full name',      id: 'name',     type: 'text',     value: name,     set: setName,     placeholder: 'Your name',           },
+    { label: 'Email address',  id: 'email',    type: 'email',    value: email,    set: setEmail,    placeholder: 'you@company.com',     },
+    { label: 'GSTIN',          id: 'gstin',    type: 'text',     value: gstin,    set: (v) => setGstin(v.toUpperCase()), placeholder: '27AAPFU0939F1ZV', mono: true },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col md:flex-row overflow-hidden relative">
-      <div className="hidden md:flex w-1/2 bg-dark items-center justify-center p-16 relative">
-        <div className="absolute top-10 left-10 flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">
-            IS
-          </div>
-          <span className="text-white font-bold tracking-wide" style={{ fontFamily: 'Plus Jakarta Sans' }}>InvoiceSync</span>
-        </div>
-
-        <div className="w-full max-w-sm">
-          <h1 className="text-4xl font-bold text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>Create your account</h1>
-          <p className="text-sm text-secondary" style={{ fontFamily: 'Inter' }}>Set up your buyer or seller workspace</p>
-
-          <div className="mt-16 relative h-50 w-full">
-            <div className="absolute top-12 left-12 right-0 h-32 bg-primary/10 border border-primary/20 rounded-2xl transform origin-bottom-right rotate-6 scale-95" />
-            <div className="absolute top-6 left-6 right-6 h-32 bg-primary/20 border border-primary/30 rounded-2xl transform origin-bottom-right rotate-3 scale-100" />
-            <div className="absolute top-0 left-0 right-12 h-36 bg-white/10 border border-white/20 rounded-2xl p-5 shadow-2xl backdrop-blur-md flex flex-col justify-between">
-              <div className="flex justify-between items-start">
-                <span className="text-white/80 font-mono text-sm font-medium tracking-wider">INV-START</span>
-                <span className="bg-[#28C840]/20 text-[#28C840] border border-[#28C840]/30 text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded shadow-sm">
-                  Ready
-                </span>
-              </div>
-              <div className="mt-4">
-                <div className="text-[10px] uppercase tracking-widest text-white/50 mb-1 font-semibold">Instant Access</div>
-                <div className="text-4xl font-extrabold text-white tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>₹0</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0a0f0d] relative overflow-hidden">
+      {/* bg blobs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-15%] left-[-10%] w-[600px] h-[600px] bg-[#4ade80]/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-[#4ade80]/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: 'linear-gradient(#4ade80 1px, transparent 1px), linear-gradient(90deg, #4ade80 1px, transparent 1px)', backgroundSize: '48px 48px' }}
+        />
       </div>
 
-      <div className="flex-1 bg-bg flex flex-col items-center justify-center p-6 sm:p-12 min-h-screen md:min-h-0">
-        <div className="md:hidden flex items-center gap-2 mb-10 w-full max-w-md justify-center">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm shadow-md">
-            IS
-          </div>
-          <span className="text-dark font-extrabold text-xl tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>InvoiceSync</span>
+      <div className="w-full max-w-[420px] relative z-10 flex flex-col">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2 mb-10">
+          <div className="w-9 h-9 bg-[#4ade80] rounded-xl flex items-center justify-center font-bold text-[14px] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/30">IS</div>
+          <span className="text-white font-bold text-xl tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>InvoiceSync</span>
         </div>
 
-        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-xl shadow-primary/5 max-w-md w-full border border-card/40 relative">
-          <div className="flex w-full bg-bg/80 rounded-xl p-1 mb-8 border border-card/60">
-            <button
-              type="button"
-              onClick={() => setActiveRole('seller')}
-              className={`flex-1 text-center py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                activeRole === 'seller' ? 'bg-dark text-white shadow-md' : 'text-secondary hover:text-dark'
-              }`}
-            >
-              Seller
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveRole('buyer')}
-              className={`flex-1 text-center py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                activeRole === 'buyer' ? 'bg-dark text-white shadow-md' : 'text-secondary hover:text-dark'
-              }`}
-            >
-              Buyer
-            </button>
+        <div className="w-full bg-[#111a15]/80 backdrop-blur-xl border border-[#243124] rounded-[2rem] p-8 shadow-2xl flex flex-col">
+          {/* Role Toggle */}
+          <div className="flex w-full bg-[#0a0f0d] rounded-2xl p-1 mb-8 border border-[#243124]">
+            {['seller', 'buyer'].map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setActiveRole(r)}
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 capitalize ${
+                  activeRole === r
+                    ? 'bg-[#4ade80] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/25'
+                    : 'text-[#6b8f76] hover:text-white'
+                }`}
+                style={{ fontFamily: 'Plus Jakarta Sans' }}
+              >
+                {r === 'seller' ? 'Seller' : 'Buyer'}
+              </button>
+            ))}
           </div>
 
-          <h2 className="font-bold text-2xl text-dark" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+          <h2 className="font-extrabold text-2xl text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
             Create a {activeRole === 'seller' ? 'Seller' : 'Buyer'} account
           </h2>
-          <p className="text-xs sm:text-sm text-secondary mt-2 mb-8 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+          <p className="text-sm text-[#6b8f76] mb-8 leading-relaxed">
             Start with your email, password, and GSTIN to unlock the dashboard.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <div>
-              <label className="block text-xs font-bold text-dark uppercase tracking-wider mb-2">Full name</label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                className="w-full bg-bg border border-card/60 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium text-dark placeholder-secondary/60"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
+            {fields.map(({ label, id, type, value, set, placeholder, mono }) => (
+              <div key={id}>
+                <label className="block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em] mb-2">
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  required
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                  placeholder={placeholder}
+                  className={`w-full bg-[#111a15] border border-[#243124] rounded-xl px-4 py-3.5 text-sm text-white placeholder-[#3d5945] outline-none focus:border-[#4ade80]/50 focus:ring-2 focus:ring-[#4ade80]/10 transition-all ${mono ? 'font-mono tracking-wider' : ''}`}
+                />
+              </div>
+            ))}
 
+            {/* Password */}
             <div>
-              <label className="block text-xs font-bold text-dark uppercase tracking-wider mb-2">Email address</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
-                className="w-full bg-bg border border-card/60 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium text-dark placeholder-secondary/60"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-dark uppercase tracking-wider mb-2">GSTIN</label>
-              <input
-                type="text"
-                required
-                value={gstin}
-                onChange={(e) => setGstin(e.target.value.toUpperCase())}
-                placeholder="27AAPFU0939F1ZV"
-                className="w-full bg-bg border border-card/60 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium text-dark placeholder-secondary/60 tracking-wider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-dark uppercase tracking-wider mb-2">Password</label>
+              <label className="block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em] mb-2">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -165,12 +119,12 @@ export default function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-bg border border-card/60 rounded-xl pl-4 pr-12 py-3.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium text-dark placeholder-secondary/60 tracking-wider"
+                  className="w-full bg-[#111a15] border border-[#243124] rounded-xl px-4 pr-12 py-3.5 text-sm text-white placeholder-[#3d5945] outline-none focus:border-[#4ade80]/50 focus:ring-2 focus:ring-[#4ade80]/10 transition-all tracking-widest"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary hover:text-dark transition-colors p-1"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#3d5945] hover:text-[#6b8f76] text-xs font-bold uppercase tracking-wider transition-colors"
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
@@ -178,7 +132,7 @@ export default function Register() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 text-xs font-medium px-4 py-3 rounded-xl mt-1 animate-fadeIn">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium px-4 py-3 rounded-xl">
                 {error}
               </div>
             )}
@@ -186,44 +140,47 @@ export default function Register() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-dark text-white rounded-xl py-3.5 font-bold mt-2 hover:bg-primary transition-all duration-300 flex items-center justify-center disabled:opacity-80 disabled:cursor-not-allowed group relative overflow-hidden"
+              className="w-full bg-[#4ade80] hover:bg-[#86efac] text-[#0a0f0d] rounded-xl py-4 font-bold text-sm mt-1 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 shadow-xl shadow-[#4ade80]/20 hover:shadow-[#4ade80]/35"
+              style={{ fontFamily: 'Plus Jakarta Sans' }}
             >
-              <div className={`absolute inset-0 bg-primary/20 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ${isLoading ? 'hidden' : ''}`} />
-              <span className="relative z-10 flex items-center gap-2">
-                {isLoading ? 'Creating account...' : 'Create account'}
-              </span>
+              {isLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-[#0a0f0d]/80 border-t-transparent rounded-full spin" />
+                  Creating account...
+                </>
+              ) : (
+                'Create account'
+              )}
             </button>
           </form>
 
-          <div className="mt-8 flex items-center gap-4">
-            <hr className="flex-1 border-card" />
-            <span className="text-xs text-secondary/80 font-bold uppercase tracking-wider">or</span>
-            <hr className="flex-1 border-card" />
+          <div className="my-7 flex items-center gap-4">
+            <div className="flex-1 h-px bg-[#243124]" />
+            <span className="text-xs text-[#3d5945] font-bold uppercase tracking-wider">or</span>
+            <div className="flex-1 h-px bg-[#243124]" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleSignup}
             disabled={isLoading || isGoogleLoading}
-            className="w-full mt-5 bg-white border border-card/70 text-dark rounded-xl py-3.5 font-semibold hover:bg-bg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            className="w-full bg-[#111a15] border border-[#243124] hover:border-[#2e4030] hover:bg-[#192319] text-white rounded-xl py-3.5 font-semibold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60"
           >
-            <svg className="w-5 h-5" viewBox="0 0 48 48" aria-hidden="true">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.23 3.6l6.85-6.85C35.9 2.38 30.37 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.36 13.98 17.73 9.5 24 9.5z" />
-              <path fill="#4285F4" d="M46.5 24.5c0-1.65-.15-3.23-.42-4.75H24v9h12.67c-.55 2.96-2.2 5.48-4.67 7.17l7.2 5.59C43.95 37.05 46.5 31.3 46.5 24.5z" />
-              <path fill="#FBBC05" d="M10.54 28.59a14.5 14.5 0 010-9.18l-7.98-6.19A23.96 23.96 0 000 24c0 3.87.92 7.53 2.56 10.78l7.98-6.19z" />
-              <path fill="#34A853" d="M24 48c6.37 0 11.72-2.1 15.63-5.7l-7.2-5.59c-2 1.34-4.57 2.14-8.43 2.14-6.27 0-11.64-4.48-13.46-10.41l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+            <svg className="w-5 h-5" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.23 3.6l6.85-6.85C35.9 2.38 30.37 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.36 13.98 17.73 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.5 24.5c0-1.65-.15-3.23-.42-4.75H24v9h12.67c-.55 2.96-2.2 5.48-4.67 7.17l7.2 5.59C43.95 37.05 46.5 31.3 46.5 24.5z"/>
+              <path fill="#FBBC05" d="M10.54 28.59a14.5 14.5 0 010-9.18l-7.98-6.19A23.96 23.96 0 000 24c0 3.87.92 7.53 2.56 10.78l7.98-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.37 0 11.72-2.1 15.63-5.7l-7.2-5.59c-2 1.34-4.57 2.14-8.43 2.14-6.27 0-11.64-4.48-13.46-10.41l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
             {isGoogleLoading ? 'Redirecting to Google...' : 'Continue with Google'}
           </button>
 
-          <div className="text-center mt-6">
-            <p className="text-sm text-secondary font-medium">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary font-bold hover:text-dark transition-colors border-b-2 border-primary/20 hover:border-dark pb-0.5 ml-1">
-                Sign in
-              </Link>
-            </p>
-          </div>
+          <p className="text-center text-sm text-[#6b8f76] mt-8">
+            Already have an account?{' '}
+            <Link to="/login" className="text-[#4ade80] font-bold hover:text-white transition-colors">
+              Sign in
+            </Link>
+          </p>
         </div>
       </div>
     </div>

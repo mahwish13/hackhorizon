@@ -1,17 +1,26 @@
 export default function StatusBadge({ status }) {
   const normalizedStatus = status?.toLowerCase() || 'pending';
-  
+
   const styles = {
-    pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    accepted: "bg-green-100 text-green-700 border-green-200",
-    rejected: "bg-red-100 text-red-700 border-red-200",
-    modified: "bg-blue-100 text-blue-700 border-blue-200"
+    pending:  'bg-[#eab308]/10 text-[#eab308] border-[#eab308]/20',
+    accepted: 'bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/20',
+    rejected: 'bg-[#f87171]/10 text-[#f87171] border-[#f87171]/20',
+    modified: 'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/20',
+  };
+
+  const dots = {
+    pending:  '#eab308',
+    accepted: '#4ade80',
+    rejected: '#f87171',
+    modified: '#60a5fa',
   };
 
   const badgeClass = styles[normalizedStatus] || styles.pending;
+  const dotColor   = dots[normalizedStatus]   || dots.pending;
 
   return (
-    <span className={`text-xs px-2.5 py-1 rounded-full font-medium border capitalize tracking-wide shadow-sm inline-block text-center ${badgeClass}`}>
+    <span className={`inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full font-bold border capitalize tracking-wider ${badgeClass}`}>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: dotColor }} />
       {status || 'Pending'}
     </span>
   );

@@ -1,134 +1,81 @@
-import { useNavigate } from 'react-router-dom';
-import Button from '../shared/Button';
-
-const stats = [
-    { value: '10K+', label: 'Invoices processed' },
-    { value: '98%', label: 'Uptime SLA' },
-    { value: '540+', label: 'Finance teams onboarded' },
-    { value: '4.9/5', label: 'Average rating' },
-];
+import { Link } from 'react-router-dom';
 
 export default function Hero() {
-    const navigate = useNavigate();
+  return (
+    <section className="relative min-h-screen bg-[#0a0f0d] flex flex-col items-center justify-center text-center pb-24 px-6 overflow-hidden">
 
-    return (
-        <section className="relative overflow-hidden bg-[#071b12] pt-32 text-white">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_18%,rgba(107,144,113,0.28),transparent_28%),radial-gradient(circle_at_80%_22%,rgba(174,195,176,0.14),transparent_20%),linear-gradient(180deg,#082115_0%,#071b12_100%)]" />
-            <div className="dynamic-float absolute left-12 top-28 h-56 w-56 rounded-full bg-primary/18 blur-[110px]" />
-            <div className="dynamic-float-delayed absolute right-10 top-36 h-72 w-72 rounded-full bg-secondary/10 blur-[140px]" />
+      {/* Background ambient glows */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[15%] w-[600px] h-[600px] bg-[#4ade80]/6 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-5%] right-[10%] w-[500px] h-[500px] bg-[#4ade80]/4 rounded-full blur-[100px]" />
+        <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[1px] h-[40%] bg-gradient-to-b from-[#4ade80]/20 to-transparent" />
+        {/* grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: 'linear-gradient(#4ade80 1px, transparent 1px), linear-gradient(90deg, #4ade80 1px, transparent 1px)',
+            backgroundSize: '64px 64px',
+          }}
+        />
+      </div>
 
-            <div className="relative mx-auto grid w-full max-w-7xl gap-16 px-5 pb-24 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:pb-28">
-                <div className="flex max-w-3xl flex-col justify-center">
-                    <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#d7e7d6] backdrop-blur-xl">
-                        <span className="h-2 w-2 rounded-full bg-[#98c295]" />
-                        B2B invoice collaboration platform
-                    </div>
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center animate-fade-up">
 
-                    <h1 className="mt-8 max-w-4xl font-heading text-5xl font-extrabold leading-[0.95] text-white sm:text-6xl xl:text-7xl">
-                        Sync invoices.
-                        <span className="bg-[linear-gradient(135deg,#dfe9de,#89b18a)] bg-clip-text text-transparent"> Close deals.</span>
-                        <br />
-                        Grow faster.
-                    </h1>
+        {/* Pill badge */}
+        <div className="inline-flex items-center gap-2 border border-[#4ade80]/25 bg-[#4ade80]/8 text-[#4ade80] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-8 shadow-lg shadow-[#4ade80]/10">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80] inline-block" style={{ animation: 'pulse-soft 2s ease-in-out infinite' }} />
+          B2B Invoice Collaboration Platform — GST Ready
+        </div>
 
-                    <p className="mt-7 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">
-                        InvoiceSync gives finance teams a live workspace for invoice approvals, GST visibility, payment tracking, and buyer-seller collaboration.
-                    </p>
+        {/* Headline */}
+        <h1
+          className="text-[clamp(2.5rem,7vw,5.5rem)] font-extrabold leading-[1.05] tracking-tight text-white mb-6"
+          style={{ fontFamily: 'Plus Jakarta Sans' }}
+        >
+          Streamline Your{' '}
+          <span className="gradient-text text-glow">Invoice</span>{' '}
+          Workflow
+        </h1>
 
-                    <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                        <Button
-                            size="lg"
-                            variant="primary"
-                            onClick={() => navigate('/login')}
-                            icon={
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                            }
-                        >
-                            Start Free Trial
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            icon={
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                                    <path d="M8 6l10 6-10 6V6z" fill="currentColor" />
-                                </svg>
-                            }
-                        >
-                            Watch Demo
-                        </Button>
-                    </div>
+        {/* Subheading */}
+        <p className="text-[clamp(1rem,2vw,1.2rem)] text-[#6b8f76] max-w-2xl mx-auto leading-relaxed mb-10">
+          Sellers upload. Buyers verify. Everyone gets paid faster.{' '}
+          <br className="hidden sm:block" />
+          The smartest B2B invoicing platform built for Indian GST compliance.
+        </p>
 
-                    <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                        {stats.map((stat) => (
-                            <div key={stat.label} className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-xl">
-                                <p className="font-heading text-3xl font-extrabold text-white">{stat.value}</p>
-                                <p className="mt-1 text-sm text-white/46">{stat.label}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-6">
+          <Link
+            to="/register"
+            className="flex items-center justify-center gap-2 bg-[#4ade80] hover:bg-[#86efac] text-[#0a0f0d] rounded-2xl px-8 py-4 font-bold text-sm transition-all duration-300 shadow-2xl shadow-[#4ade80]/25 hover:shadow-[#4ade80]/45 hover:scale-[1.02]"
+            style={{ fontFamily: 'Plus Jakarta Sans' }}
+          >
+            Get Started Free
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+          <button className="flex items-center justify-center gap-2 border border-white/10 bg-white/5 hover:bg-white/10 text-white rounded-2xl px-8 py-4 font-semibold text-sm transition-all duration-300 backdrop-blur-sm">
+            <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
+              <svg className="w-3 h-3 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4l12 6-12 6V4z" />
+              </svg>
+            </span>
+            Watch Demo
+          </button>
+        </div>
 
-                <div className="flex items-end justify-center lg:justify-end">
-                    <div className="relative w-full max-w-[560px] rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5 shadow-[0_35px_120px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
-                        <div className="mb-5 flex items-center justify-between">
-                            <div>
-                                <p className="text-xs uppercase tracking-[0.24em] text-white/35">Live dashboard</p>
-                                <h2 className="mt-2 font-heading text-3xl font-bold">Finance command center</h2>
-                            </div>
-                            <div className="rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-right">
-                                <p className="text-xs uppercase tracking-[0.22em] text-white/35">Recovered</p>
-                                <p className="mt-1 font-heading text-2xl font-bold text-[#dff0dd]">Rs1.8Cr</p>
-                            </div>
-                        </div>
+        {/* Trust note */}
+        <p className="text-xs font-medium text-[#3d5945] tracking-wide">
+          No credit card required &nbsp;·&nbsp; Free to start &nbsp;·&nbsp; GST-ready
+        </p>
 
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            {[
-                                ['Pending approvals', '18'],
-                                ['Paid this week', '142'],
-                                ['GST flagged', '03'],
-                            ].map(([label, value]) => (
-                                <div key={label} className="rounded-2xl border border-white/8 bg-[#0d2419] p-4">
-                                    <p className="text-sm text-white/45">{label}</p>
-                                    <p className="mt-3 font-heading text-3xl font-bold">{value}</p>
-                                </div>
-                            ))}
-                        </div>
+      </div>
 
-                        <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/8 bg-[#0b2117]">
-                            <div className="grid grid-cols-[1.3fr_1fr_0.9fr] border-b border-white/6 px-5 py-3 text-xs uppercase tracking-[0.22em] text-white/30">
-                                <span>Buyer</span>
-                                <span>Amount</span>
-                                <span>Status</span>
-                            </div>
-                            {[
-                                ['Reliance Industries', 'Rs1,24,000', 'Paid'],
-                                ['Tata Consultancy', 'Rs87,500', 'Pending'],
-                                ['Infosys Ltd.', 'Rs2,03,400', 'Overdue'],
-                                ['Wipro Technologies', 'Rs56,200', 'Draft'],
-                            ].map(([buyer, amount, status]) => (
-                                <div key={buyer} className="grid grid-cols-[1.3fr_1fr_0.9fr] items-center border-b border-white/6 px-5 py-4 text-sm last:border-b-0">
-                                    <span className="font-medium text-white/88">{buyer}</span>
-                                    <span className="text-white/72">{amount}</span>
-                                    <span className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${
-                                        status === 'Paid'
-                                            ? 'bg-[#1c4e30] text-[#b8ecb8]'
-                                            : status === 'Pending'
-                                                ? 'bg-[#4a4317] text-[#f5d76c]'
-                                                : status === 'Overdue'
-                                                    ? 'bg-[#4f2020] text-[#ff9b9b]'
-                                                    : 'bg-white/8 text-white/55'
-                                    }`}>
-                                        {status}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
+      {/* Bottom gradient fade */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#0a0f0d] to-transparent pointer-events-none" />
+    </section>
+  );
 }

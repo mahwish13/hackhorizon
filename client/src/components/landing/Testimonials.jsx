@@ -1,49 +1,119 @@
-const testimonials = [
-    ['Priya Sharma', 'CFO, NexTrade Solutions', 'P', 'InvoiceSync cut our invoice processing time by 60%. The buyer collaboration portal became a genuine differentiator for our team.'],
-    ['Arjun Mehta', 'Founder, SupplyBridge India', 'A', 'We handle 300+ invoices every month across 50 buyers. Everything now stays organized and GST reviews no longer derail the quarter.'],
-    ['Sneha Patil', 'Head of Finance, Orbis Manufacturing', 'S', 'The real-time analytics finally gave leadership clean visibility into collections and working capital movement.'],
-    ['Rajesh Kumar', 'Director, Vertex Exports', 'R', 'Switching from manual spreadsheets was seamless. Automated reminders alone helped us recover over Rs15L in outstanding dues.'],
+const testimonialsData = [
+  { name: "Arjun Mehta",     role: "CFO",               company: "Mehta Textiles",  text: "We used to spend 3 days every month reconciling invoices. With InvoiceSync, buyers confirm the same day. Our DSO dropped by 40%.", rating: 5, initials: "AM" },
+  { name: "Priya Nair",      role: "Accounts Head",      company: "Nair Pharma",     text: "The GST breakdown dashboard alone saved us 8 hours per month. CGST and SGST are auto-calculated and always accurate.", rating: 5, initials: "PN" },
+  { name: "Rohit Sharma",    role: "Founder",            company: "RS Traders",      text: "Chasing buyers for invoice confirmation was a nightmare. Now they get notified, they click accept, we get paid. Simple.", rating: 5, initials: "RS" },
+  { name: "Sneha Kulkarni",  role: "Operations Lead",    company: "SKL Exports",     text: "The status tracking feature is incredible. Every team member can see exactly where an invoice stands without asking anyone.", rating: 4, initials: "SK" },
+  { name: "Vikram Joshi",    role: "Director",           company: "Joshi Industrial",text: "We handle 500+ invoices a month. InvoiceSync's buyer dashboard makes validation 10x faster. Worth every rupee.", rating: 5, initials: "VJ" },
+  { name: "Meera Patel",     role: "Finance Manager",    company: "Patel Goods",     text: "The missing invoice request feature is a gem. No more emails. Buyer clicks request, we upload, done.", rating: 5, initials: "MP" }
 ];
 
-export default function Testimonials() {
-    return (
-        <section id="testimonials" className="bg-[linear-gradient(180deg,#f5f8ea_0%,#ecf4dc_100%)] py-24">
-            <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-3xl text-center">
-                    <p className="text-xs font-bold uppercase tracking-[0.26em] text-primary">Testimonials</p>
-                    <h2 className="mt-4 font-heading text-4xl font-extrabold leading-tight text-dark sm:text-5xl">
-                        Loved by finance teams across India.
-                    </h2>
-                </div>
+const mobileTestimonials = [...testimonialsData, ...testimonialsData];
 
-                <div className="mt-14 grid gap-6 lg:grid-cols-2">
-                    {testimonials.map(([name, roleText, avatar, text], index) => (
-                        <div key={name} className={`rounded-[2rem] border p-7 shadow-[0_18px_40px_rgba(55,85,52,0.06)] ${
-                            index % 2 === 0 ? 'border-white/10 bg-[#0c2218] text-white' : 'border-[#c8d7bc] bg-white/78 text-dark'
-                        }`}>
-                            <div className="flex gap-1 text-primary">
-                                {Array.from({ length: 5 }).map((_, starIndex) => (
-                                    <svg key={starIndex} width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                ))}
-                            </div>
-                            <p className={`mt-5 text-lg leading-8 ${index % 2 === 0 ? 'text-white/72' : 'text-secondary'}`}>
-                                "{text}"
-                            </p>
-                            <div className="mt-8 flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
-                                    {avatar}
-                                </div>
-                                <div>
-                                    <p className={`font-heading text-lg font-bold ${index % 2 === 0 ? 'text-white' : 'text-dark'}`}>{name}</p>
-                                    <p className={`text-sm ${index % 2 === 0 ? 'text-white/45' : 'text-secondary'}`}>{roleText}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+const avatarColors = ['#166534', '#14532d', '#15803d', '#16a34a', '#4ade80', '#86efac'];
+
+export default function Testimonials() {
+  const renderStars = (rating) => (
+    <div className="flex gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i} className={`text-sm ${i < rating ? 'text-[#4ade80]' : 'text-[#243124]'}`}>★</span>
+      ))}
+    </div>
+  );
+
+  const TestimonialCard = ({ t, idx, isMobile }) => (
+    <div className={`break-inside-avoid bg-[#111a15] border border-[#243124] rounded-2xl p-6 hover:border-[#2e4030] transition-all duration-300 group ${
+      isMobile ? 'inline-block w-[300px] whitespace-normal flex-shrink-0' : 'mb-5 w-full'
+    }`}>
+      {/* Stars */}
+      <div className="mb-4">{renderStars(t.rating)}</div>
+
+      {/* Quote */}
+      <p className="text-[#6b8f76] text-sm leading-relaxed group-hover:text-[#e8f5ec] transition-colors duration-300 mb-6">
+        "{t.text}"
+      </p>
+
+      {/* Author */}
+      <div className="flex items-center gap-3 pt-4 border-t border-[#243124]">
+        <div
+          className="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white"
+          style={{ backgroundColor: avatarColors[idx % avatarColors.length], fontFamily: 'Plus Jakarta Sans' }}
+        >
+          {t.initials}
+        </div>
+        <div>
+          <div className="text-sm font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>{t.name}</div>
+          <div className="text-[11px] text-[#3d5945] font-medium">{t.role}, {t.company}</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <section id="testimonials" className="bg-[#0a0f0d] py-28 px-0 md:px-10 overflow-hidden relative">
+      {/* bg glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#4ade80]/4 rounded-full blur-[140px] pointer-events-none" />
+
+      {/* Header */}
+      <div className="text-center mb-16 px-6 max-w-2xl mx-auto flex flex-col items-center relative">
+        <div className="inline-flex items-center gap-2 border border-[#4ade80]/20 bg-[#4ade80]/8 text-[#4ade80] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" />
+          What our users say
+        </div>
+        <h2
+          className="text-[clamp(1.8rem,4vw,2.75rem)] font-extrabold text-white leading-tight mb-4"
+          style={{ fontFamily: 'Plus Jakarta Sans' }}
+        >
+          Real businesses. Real results.
+        </h2>
+        <p className="text-[#6b8f76] text-base leading-relaxed">
+          Thousands of Indian businesses use InvoiceSync to close their invoice cycles faster.
+        </p>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative">
+        {/* Desktop masonry */}
+        <div className="hidden md:block w-full px-6">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-5">
+            {testimonialsData.map((t, i) => (
+              <TestimonialCard key={`desktop-${i}`} t={t} idx={i} isMobile={false} />
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile horizontal scroll */}
+        <div className="block md:hidden relative w-full overflow-hidden group px-4">
+          <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-[#0a0f0d] to-transparent z-10" />
+          <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-[#0a0f0d] to-transparent z-10" />
+          <div
+            className="flex w-max gap-4 group-hover:[animation-play-state:paused]"
+            style={{ animation: 'scrollLeftMobile 30s linear infinite' }}
+          >
+            {mobileTestimonials.map((t, i) => (
+              <TestimonialCard key={`mobile-${i}`} t={t} idx={i} isMobile={true} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Rating footer */}
+      <div className="mt-20 text-center flex flex-col items-center px-6 relative">
+        <div className="flex gap-1 mb-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} className="text-[#4ade80] text-2xl">★</span>
+          ))}
+        </div>
+        <div className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+          4.9/5 average rating
+        </div>
+        <div className="text-sm text-[#6b8f76]">From 2,000+ verified Indian businesses</div>
+      </div>
+
+      <style>{`
+        @keyframes scrollLeftMobile {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+      `}</style>
+    </section>
+  );
 }
