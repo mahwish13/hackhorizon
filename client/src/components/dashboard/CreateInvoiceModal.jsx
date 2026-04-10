@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../api/axios';
-import Button from '../shared/Button';
 
 export default function CreateInvoiceModal({ onClose, onCreated }) {
   const { user } = useAuth();
@@ -17,7 +16,7 @@ export default function CreateInvoiceModal({ onClose, onCreated }) {
     invoiceNumber: '',
     buyerGstin: '',
     amount: '',
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     tax: { cgst: '', sgst: '', igst: '' },
   });
   const [loading, setLoading] = useState(false);
@@ -58,116 +57,120 @@ export default function CreateInvoiceModal({ onClose, onCreated }) {
     }
   };
 
-  const inputCls = "w-full bg-[#0f1812] border border-[#243124] focus:border-[#4ade80]/50 focus:ring-2 focus:ring-[#4ade80]/10 text-white rounded-xl px-4 py-3 text-sm outline-none transition-all placeholder-[#3d5945] font-medium";
-  const labelCls = "block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em] mb-2";
+  const labelCls = "text-[10px] font-black text-[#728279] uppercase tracking-[0.2em] mb-2 px-1 block";
+  const inputCls = "w-full bg-[#F4F1EA]/50 border border-[#E5E2D9] rounded-2xl px-5 py-3.5 text-sm font-bold text-[#0A2518] focus:border-[#047857] outline-none transition-all placeholder-[#A2A9A5]";
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A2518]/60 backdrop-blur-md"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div
-        className="bg-[#111a15] border border-[#243124] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden"
-        style={{ animation: 'animateIn 0.2s cubic-bezier(.16,1,.3,1)' }}
-      >
+      <div className="bg-white border border-[#E5E2D9] rounded-[2.5rem] shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+        
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#243124] flex-shrink-0">
+        <div className="flex items-center justify-between px-8 py-6 border-b border-[#E5E2D9] bg-[#F4F1EA]/10 flex-shrink-0">
           <div>
-            <h2 className="font-bold text-white text-[17px]" style={{ fontFamily: 'Plus Jakarta Sans' }}>New Invoice</h2>
-            <p className="text-[11px] text-[#3d5945] mt-0.5">Fill in the details to create an invoice</p>
+            <h2 className="font-extrabold text-[#0A2518] text-xl tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>Draft Document</h2>
+            <p className="text-[10px] text-[#728279] mt-1 uppercase font-black tracking-widest leading-none">Initialize a new financial record</p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-[#192319] border border-[#243124] flex items-center justify-center text-[#6b8f76] hover:text-white hover:bg-[#2e4030] transition-all"
+            className="w-10 h-10 rounded-xl bg-white border border-[#E5E2D9] flex items-center justify-center text-[#728279] hover:text-[#047857] hover:border-[#047857]/30 transition-all shadow-sm"
           >
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path d="M18 6L6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round" />
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M18 6L6 18M6 6l12 12" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="px-6 py-5 flex flex-col gap-5 overflow-y-auto custom-scrollbar flex-1">
+        <form onSubmit={handleSubmit} className="px-8 py-8 flex flex-col gap-6 overflow-y-auto custom-scrollbar flex-1">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-4 py-3 rounded-xl font-medium">
-              {error}
+            <div className="bg-red-50 border border-red-100 text-red-600 text-[11px] px-5 py-4 rounded-2xl font-black flex items-center gap-3 animate-fade-in shadow-sm">
+               <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               {error}
             </div>
           )}
 
-          {sellerBusinesses.length > 1 && (
-            <div>
-              <label className={labelCls}>Issuing Business</label>
-              <select
-                name="sellerGstin"
-                value={form.sellerGstin}
-                onChange={handle}
-                required
-                className={inputCls}
-              >
-                {sellerBusinesses.map(b => (
-                  <option key={b.gstin} value={b.gstin}>{b.name} ({b.gstin})</option>
+          <div className="space-y-6">
+            {sellerBusinesses.length > 1 && (
+              <div className="space-y-2">
+                <label className={labelCls}>Issuing Profile</label>
+                <select
+                  name="sellerGstin"
+                  value={form.sellerGstin}
+                  onChange={handle}
+                  required
+                  className={`${inputCls} h-[54px] appearance-none cursor-pointer`}
+                >
+                  {sellerBusinesses.map(b => (
+                    <option key={b.gstin} value={b.gstin}>{b.name} ({b.gstin})</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-6">
+               <div className="space-y-2">
+                 <label className={labelCls}>Invoice Reference</label>
+                 <input type="text" name="invoiceNumber" value={form.invoiceNumber} onChange={handle} required placeholder="e.g. INV-2024-001" className={inputCls} />
+               </div>
+               <div className="space-y-2">
+                 <label className={labelCls}>Filing Date</label>
+                 <input type="date" name="date" value={form.date} onChange={handle} required className={inputCls} />
+               </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className={labelCls}>Purchaser GSTIN</label>
+              <input type="text" name="buyerGstin" maxLength={15} value={form.buyerGstin} onChange={handle} required placeholder="Enter 15-digit GSTIN..." className={`${inputCls} font-mono uppercase tracking-wider`} />
+            </div>
+
+            <div className="space-y-2">
+              <label className={labelCls}>Taxable Value (₹)</label>
+              <input type="number" name="amount" value={form.amount} onChange={handle} required placeholder="Enter gross amount..." className={`${inputCls} text-lg`} />
+            </div>
+
+            {/* GST */}
+            <div className="bg-[#FDFBF7] p-6 rounded-[1.5rem] border border-[#E5E2D9]/60 space-y-5">
+              <p className="text-[10px] font-black text-[#728279] uppercase tracking-[0.25em]">Statutory Tax Fields</p>
+              <div className="grid grid-cols-3 gap-4">
+                {['cgst', 'sgst', 'igst'].map((t) => (
+                  <div key={t} className="space-y-2">
+                    <label className="text-[9px] font-black text-[#A2A9A5] uppercase tracking-widest block text-center">{t}</label>
+                    <input
+                      type="number"
+                      name={`tax.${t}`}
+                      value={form.tax[t]}
+                      onChange={handle}
+                      placeholder="0"
+                      className="w-full bg-white border border-[#E5E2D9] rounded-xl px-3 py-3 text-sm font-bold text-[#0A2518] text-center focus:border-[#047857] outline-none shadow-sm"
+                    />
+                  </div>
                 ))}
-              </select>
-            </div>
-          )}
-
-          {[
-            { label: 'Invoice Number',    name: 'invoiceNumber', type: 'text',   placeholder: 'INV-2401',         mono: false },
-            { label: 'Buyer GSTIN',       name: 'buyerGstin',    type: 'text',   placeholder: '27AAPFU0939F1ZV',  mono: true  },
-            { label: 'Invoice Amount (₹)', name: 'amount',       type: 'number', placeholder: '100000',           mono: false },
-            { label: 'Invoice Date',      name: 'date',          type: 'date',   placeholder: '',                 mono: false },
-          ].map(({ label, name, type, placeholder, mono }) => (
-            <div key={name}>
-              <label className={labelCls}>{label}</label>
-              <input
-                type={type}
-                name={name}
-                value={form[name]}
-                onChange={handle}
-                required
-                placeholder={placeholder}
-                className={`${inputCls} ${mono ? 'font-mono tracking-wider' : ''}`}
-              />
-            </div>
-          ))}
-
-          {/* GST Fields */}
-          <div>
-            <p className={labelCls}>GST Breakdown <span className="normal-case text-[#3d5945] font-medium">(optional)</span></p>
-            <div className="grid grid-cols-3 gap-3">
-              {['cgst', 'sgst', 'igst'].map((t) => (
-                <div key={t}>
-                  <label className="block text-[10px] font-bold text-[#3d5945] uppercase mb-1.5">{t}</label>
-                  <input
-                    type="number"
-                    name={`tax.${t}`}
-                    value={form.tax[t]}
-                    onChange={handle}
-                    placeholder="0"
-                    className={inputCls}
-                  />
-                </div>
-              ))}
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-1">
-            <Button type="submit" variant="primary" size="md" loading={loading} className="flex-1">
-              Create Invoice
-            </Button>
-            <Button type="button" variant="ghost" size="md" onClick={onClose}>
-              Cancel
-            </Button>
+          <div className="flex flex-col gap-3 pt-4 pb-2">
+            <button
+               type="submit"
+               disabled={loading}
+               className="w-full bg-[#0A2518] hover:bg-[#047857] text-white py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-[#0A2518]/10 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+            >
+              {loading && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full spin" />}
+              {loading ? 'Transmitting...' : 'Certify & Transmit'}
+            </button>
+            <button
+               type="button"
+               onClick={onClose}
+               className="w-full py-4 text-[10px] font-black text-[#728279] uppercase tracking-widest hover:bg-[#F4F1EA] rounded-2xl transition-all"
+            >
+              Discard Changes
+            </button>
           </div>
         </form>
       </div>
-
-      <style>{`
-        @keyframes animateIn {
-          from { opacity: 0; transform: scale(0.95) translateY(10px); }
-          to   { opacity: 1; transform: scale(1) translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }

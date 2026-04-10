@@ -26,66 +26,73 @@ export default function AuditFeed() {
     }).format(new Date(dateString));
   };
 
-  const getActionColor = (action) => {
+  const getActionStyles = (action) => {
     switch (action) {
-      case 'Created Invoice': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-      case 'Updated Status': return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-      case 'Updated Payment': return 'text-[#4ade80] bg-[#4ade80]/10 border-[#4ade80]/20';
-      case 'Created Request': return 'text-orange-400 bg-orange-400/10 border-orange-400/20';
-      case 'Fulfilled Request': return 'text-teal-400 bg-teal-400/10 border-teal-400/20';
-      default: return 'text-white bg-gray-500/10 border-gray-500/20';
+      case 'Created Invoice': return 'text-[#047857] bg-[#047857]/5 border-[#047857]/10';
+      case 'Updated Status': return 'text-purple-600 bg-purple-50 border-purple-100';
+      case 'Updated Payment': return 'text-emerald-700 bg-emerald-50 border-emerald-100';
+      case 'Created Request': return 'text-orange-600 bg-orange-50 border-orange-100';
+      case 'Fulfilled Request': return 'text-cyan-700 bg-cyan-50 border-cyan-100';
+      default: return 'text-[#728279] bg-[#F4F1EA] border-[#E5E2D9]';
     }
   };
 
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-         <span className="w-8 h-8 border-2 border-[#4ade80]/30 border-t-[#4ade80] rounded-full spin" />
+         <span className="w-10 h-10 border-4 border-[#047857]/20 border-t-[#047857] rounded-full spin" />
       </div>
     );
   }
 
   return (
-    <div className="bg-[#111a15] border border-[#243124] rounded-2xl p-6 h-[calc(100vh-140px)] flex flex-col">
-      <h3 className="font-bold text-lg text-white mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>Audit Trail & System Logs</h3>
+    <div className="bg-white border border-[#E5E2D9] rounded-[2.5rem] p-10 h-full flex flex-col shadow-sm">
+      <div className="mb-10">
+         <h3 className="font-extrabold text-xl text-[#0A2518] tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>Security & Audit Distribution</h3>
+         <p className="text-sm font-medium text-[#728279] mt-2">Historical immutable records of all system state changes.</p>
+      </div>
       
-      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mb-4">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
         {logs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full opacity-60">
-            <svg className="w-10 h-10 text-[#3d5945] mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span className="text-sm font-semibold text-[#3d5945]">No secure logging events captured yet.</span>
+          <div className="flex flex-col items-center justify-center h-64 opacity-60">
+            <div className="w-16 h-16 rounded-full bg-[#F4F1EA] flex items-center justify-center mb-4">
+               <svg className="w-8 h-8 text-[#A2A9A5]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <span className="text-sm font-bold text-[#A2A9A5] uppercase tracking-widest">No audit events found</span>
           </div>
         ) : (
-          <div className="relative border-l border-[#243124] ml-3 pl-6 space-y-6 py-2">
+          <div className="relative border-l-2 border-[#E5E2D9] ml-4 pl-10 space-y-10 py-4">
             {logs.map((log) => (
-              <div key={log._id} className="relative group">
-                {/* Timeline dot */}
-                <div className="absolute -left-[30px] top-1.5 w-3 h-3 bg-[#0a0f0d] border-2 border-[#3d5945] rounded-full group-hover:border-[#4ade80] transition-colors" />
+              <div key={log._id} className="relative group animate-fade-in">
+                {/* Timeline junction */}
+                <div className="absolute -left-[49px] top-1 w-6 h-6 bg-white border-2 border-[#E5E2D9] rounded-xl flex items-center justify-center group-hover:border-[#047857] transition-all group-hover:scale-110 shadow-sm z-10">
+                   <div className="w-2 h-2 rounded-full bg-[#D1CFC2] group-hover:bg-[#047857]" />
+                </div>
                 
-                <div className="flex flex-col gap-1 hidden-scrollbar bg-[#0a0f0d] border border-[#1a2a1f] p-4 rounded-xl group-hover:border-[#243124] transition-colors">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getActionColor(log.action)}`}>
+                <div className="flex flex-col gap-3 bg-[#F4F1EA]/20 border border-[#E5E2D9]/60 p-6 rounded-[1.5rem] hover:border-[#047857]/30 hover:bg-white hover:shadow-xl hover:shadow-[#047857]/5 transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <span className={`text-[9px] font-black w-fit uppercase tracking-[0.14em] px-3 py-1.5 rounded-lg border shadow-sm ${getActionStyles(log.action)}`}>
                       {log.action}
                     </span>
-                    <span className="text-[10px] font-medium text-[#6b8f76] uppercase tracking-wide flex items-center gap-1.5">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span className="text-[10px] font-black text-[#A2A9A5] uppercase tracking-widest flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       {formatDate(log.createdAt)}
                     </span>
                   </div>
                   
-                  <p className="text-sm font-medium text-[#e8f5ec]">
+                  <p className="text-sm font-bold text-[#4D6357] leading-relaxed">
                     {log.details}
                   </p>
                   
-                  <div className="flex items-center gap-3 mt-3 pt-3 border-t border-[#1a2a1f]">
-                    <span className="text-[10px] font-bold text-[#3d5945] uppercase tracking-wider">
-                      Business ID: <span className="text-[#6b8f76] font-mono">{log.businessGstin || 'INTERNAL'}</span>
-                    </span>
-                    <span className="text-[10px] font-bold text-[#3d5945] uppercase tracking-wider">
-                      Sys Object: <span className="text-[#6b8f76] font-mono">{log.entityId}</span>
-                    </span>
+                  <div className="flex flex-wrap items-center gap-4 mt-2 pt-4 border-t border-[#E5E2D9]/60">
+                    <div className="flex items-center gap-2">
+                       <span className="text-[9px] font-black text-[#A2A9A5] uppercase tracking-[0.2em]">ENTITY</span>
+                       <span className="text-[10px] font-black text-[#047857] bg-[#047857]/5 px-2 py-0.5 rounded-md border border-[#047857]/10 font-mono italic">{log.entityId}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="text-[9px] font-black text-[#A2A9A5] uppercase tracking-[0.2em]">IDENTIFIER</span>
+                       <span className="text-[10px] font-black text-[#0A2518] bg-white border border-[#E5E2D9] px-2 py-0.5 rounded-md font-mono">{log.businessGstin || 'INTERNAL_SYS'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
