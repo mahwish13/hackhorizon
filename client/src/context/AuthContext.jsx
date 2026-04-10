@@ -1,39 +1,60 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);   // { id, name, email, role, gstin }
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const stored = localStorage.getItem('user');
-        if (stored) {
-            try { setUser(JSON.parse(stored)); } catch (_) { }
-        }
-        setLoading(false);
-    }, []);
+  // Rehydrate from localStorage on mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    if (storedToken && storedUser) {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (_) {}
+    }
+    setLoading(false);
+  }, []);
 
-    const login = async (email, password) => {
-        const { data } = await api.post('/auth/login', { email, password });
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        setUser(data.user);
-        return data.user;
-    };
+  /**
+   * login(userData, token)
+   * userData: { id, name, email, role, gstin }
+   */
+  const login = (userData, newToken) => {
+    localStorage.setItem('token', newToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setToken(newToken);
+    setUser(userData);
+  };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-    };
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  /**
+   * switchRole(newToken, newRole)
+   * Updates the JWT and role when a user switches context (e.g. seller ↔ buyer).
+   */
+  const switchRole = (newToken, newRole) => {
+    const updatedUser = { ...user, role: newRole };
+    localStorage.setItem('token', newToken);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setToken(newToken);
+    setUser(updatedUser);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, token, loading, login, logout, switchRole }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export const useAuth = () => useContext(AuthContext);

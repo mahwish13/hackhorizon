@@ -1,75 +1,60 @@
-import { useNavigate } from 'react-router-dom';
-import Button from '../shared/Button';
+import { Link } from 'react-router-dom';
 
 export default function Hero() {
-    const navigate = useNavigate();
+  return (
+    <div className="relative min-h-screen bg-bg flex flex-col items-center justify-center text-center pt-24 pb-16 px-6 overflow-hidden">
+      {/* Background radial blur behind heading */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl z-0 pointer-events-none" />
 
-    return (
-        <section className="relative min-h-screen bg-dark flex flex-col items-center justify-center overflow-hidden pt-16">
-            {/* Background gradient blobs */}
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-secondary/15 rounded-full blur-[100px] pointer-events-none" />
+      {/* Content wrapper relative to z-10 */}
+      <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+        {/* Top pill badge */}
+        <div className="bg-dark/10 text-dark rounded-full px-4 py-1.5 text-xs font-medium flex items-center mb-6">
+          <span className="w-2 h-2 rounded-full bg-primary inline-block mr-2" />
+          B2B Invoice Collaboration Platform
+        </div>
 
-            <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-                {/* Badge */}
-                <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-4 py-1.5 mb-8">
-                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span className="text-xs font-semibold text-card uppercase tracking-widest">
-                        B2B Invoice Collaboration Platform
-                    </span>
-                </div>
+        {/* Main heading */}
+        <h1 
+          className="text-4xl md:text-6xl font-extrabold text-dark leading-tight max-w-3xl mx-auto" 
+          style={{ fontFamily: 'Plus Jakarta Sans' }}
+        >
+          Streamline Your <br className="hidden sm:block" />
+          <span className="text-primary underline decoration-wavy decoration-[3px] underline-offset-8">
+            Invoice
+          </span>{' '}
+          Workflow
+        </h1>
 
-                {/* Headline */}
-                <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6"
-                    style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                    Sync Invoices.{' '}
-                    <span className="text-transparent bg-clip-text"
-                        style={{ backgroundImage: 'linear-gradient(135deg, #6B9071, #AEC3B0)' }}>
-                        Close Deals.
-                    </span>
-                    <br />Grow Faster.
-                </h1>
+        {/* Subheading */}
+        <p className="text-lg text-secondary mt-6 max-w-xl mx-auto" style={{ fontFamily: 'Inter' }}>
+          Sellers upload. Buyers verify. Everyone gets paid faster.
+        </p>
 
-                {/* Subheadline */}
-                <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    InvoiceSync streamlines B2B invoicing with real-time collaboration, GST compliance,
-                    and an AI-powered analytics dashboard — all in one place.
-                </p>
+        {/* Buttons row */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
+          <Link
+            to="/login"
+            className="flex items-center justify-center gap-2 bg-dark text-white rounded-xl px-7 py-3.5 font-medium text-sm hover:bg-primary transition-all duration-300"
+          >
+            Get Started
+            <span>&rarr;</span>
+          </Link>
+          <button
+            className="flex items-center justify-center gap-2 bg-transparent border border-dark text-dark rounded-xl px-7 py-3.5 font-medium text-sm hover:bg-dark hover:text-white transition-all duration-300"
+          >
+            <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M4 4l12 6-12 6V4z" />
+            </svg>
+            Live Demo
+          </button>
+        </div>
 
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                    <Button size="lg" variant="primary" onClick={() => navigate('/login')}
-                        className="text-base shadow-xl shadow-primary/30">
-                        Start Free Trial
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </Button>
-                    <Button size="lg" variant="outline"
-                        className="border-white/30 text-white hover:bg-white/10 hover:border-white/50">
-                        Watch Demo
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                            <path d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                        </svg>
-                    </Button>
-                </div>
-
-                {/* Trust stats */}
-                <div className="flex flex-wrap justify-center gap-8 text-center">
-                    {[
-                        { val: '10K+', label: 'Invoices Processed' },
-                        { val: '98%', label: 'Uptime SLA' },
-                        { val: '500+', label: 'Businesses Trust Us' },
-                        { val: '4.9★', label: 'Average Rating' },
-                    ].map(({ val, label }) => (
-                        <div key={label}>
-                            <div className="text-2xl font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{val}</div>
-                            <div className="text-xs text-white/50 mt-0.5">{label}</div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+        {/* Below buttons small text */}
+        <p className="mt-4 text-xs text-secondary">
+          No credit card required &middot; Free to start &middot; GST-ready
+        </p>
+      </div>
+    </div>
+  );
 }

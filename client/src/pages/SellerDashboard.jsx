@@ -1,109 +1,233 @@
+import { useState, useEffect } from 'react';
 import Sidebar from '../components/dashboard/Sidebar';
 import TopBar from '../components/dashboard/TopBar';
 import StatCard from '../components/dashboard/StatCard';
 import InvoiceTable from '../components/dashboard/InvoiceTable';
-import GSTChart from '../components/dashboard/GSTChart';
-import Button from '../components/shared/Button';
-
-const invoices = [
-    { id: 'INV-2401', client: 'Reliance Industries', amount: '₹1,24,000', gst: '₹22,320', status: 'Paid', dueDate: '10 Apr 2026' },
-    { id: 'INV-2402', client: 'Tata Consultancy Services', amount: '₹87,500', gst: '₹15,750', status: 'Pending', dueDate: '15 Apr 2026' },
-    { id: 'INV-2403', client: 'Infosys Limited', amount: '₹2,03,400', gst: '₹36,612', status: 'Overdue', dueDate: '05 Apr 2026' },
-    { id: 'INV-2404', client: 'Wipro Technologies', amount: '₹56,200', gst: '₹10,116', status: 'Draft', dueDate: '20 Apr 2026' },
-    { id: 'INV-2405', client: 'HCL Technologies', amount: '₹1,78,000', gst: '₹32,040', status: 'Approved', dueDate: '25 Apr 2026' },
-    { id: 'INV-2406', client: 'L&T Finance', amount: '₹95,600', gst: '₹17,208', status: 'Paid', dueDate: '02 Apr 2026' },
-];
-
-const statIcons = {
-    revenue: (
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    ),
-    invoices: (
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    ),
-    pending: (
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-            <polyline points="12 6 12 12 16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-    ),
-    overdue: (
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-            <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    ),
-};
+import InvoiceModal from '../components/dashboard/InvoiceModal';
+import CreateInvoiceModal from '../components/dashboard/CreateInvoiceModal';
+import api from '../api/axios';
+import { BarChart, Bar, ResponsiveContainer, Tooltip } from 'recharts';
 
 export default function SellerDashboard() {
+  const [stats, setStats] = useState(null);
+  const [invoices, setInvoices] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [gstData, setGstData] = useState(null);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const [dashRes, invRes, reqRes, gstRes] = await Promise.all([
+        api.get('/dashboard/seller'),
+        api.get('/invoices/sent'),
+        api.get('/requests/incoming'),
+        api.get('/dashboard/gst')
+      ]);
+      setStats(dashRes.data?.data || null);
+      setInvoices(invRes.data?.data || []);
+      setRequests(reqRes.data?.data || []);
+      setGstData(gstRes.data?.data || null);
+    } catch (err) {
+      console.error('Data fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleFulfillRequest = async (id) => {
+    try {
+      await api.patch(`/requests/${id}/fulfill`);
+      fetchData();
+    } catch (err) {
+      console.error('Failed to fulfill request:', err);
+    }
+  };
+
+  const fmtCurrency = (val) => {
+    if (!val && val !== 0) return '--';
+    return val.toLocaleString('en-IN');
+  };
+
+  if (loading) {
     return (
-        <div className="flex min-h-screen bg-bg">
-            <Sidebar role="seller" />
-            <div className="flex-1 flex flex-col min-w-0">
-                <TopBar
-                    title="Seller Dashboard"
-                    subtitle="Welcome back — here's your revenue overview"
-                />
-                <main className="flex-1 p-6 flex flex-col gap-6">
-                    {/* Quick action */}
-                    <div className="flex items-center justify-between">
-                        <div />
-                        <Button variant="primary" size="md"
-                            icon={
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                                    <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                                    <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                                </svg>
-                            }
-                        >
-                            New Invoice
-                        </Button>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <StatCard
-                            label="Total Revenue"
-                            value="₹8.4L"
-                            change="12.5% this month"
-                            changeType="up"
-                            accent
-                            icon={statIcons.revenue}
-                        />
-                        <StatCard
-                            label="Total Invoices"
-                            value="167"
-                            change="8 new"
-                            changeType="up"
-                            icon={statIcons.invoices}
-                        />
-                        <StatCard
-                            label="Pending Amount"
-                            value="₹2.1L"
-                            change="3 invoices"
-                            changeType="up"
-                            icon={statIcons.pending}
-                        />
-                        <StatCard
-                            label="Overdue"
-                            value="₹43K"
-                            change="2 overdue"
-                            changeType="down"
-                            icon={statIcons.overdue}
-                        />
-                    </div>
-
-                    {/* Charts */}
-                    <GSTChart />
-
-                    {/* Invoice Table */}
-                    <InvoiceTable invoices={invoices} role="seller" />
-                </main>
-            </div>
+      <div className="flex bg-bg h-screen overflow-hidden">
+        <Sidebar role="seller" />
+        <div className="flex-1 flex items-center justify-center">
+          <span className="animate-spin border-4 border-primary border-t-transparent rounded-full w-8 h-8" />
         </div>
+      </div>
     );
+  }
+
+  return (
+    <div className="flex h-screen overflow-hidden bg-bg font-body relative">
+      {/* Left Sidebar */}
+      <Sidebar role="seller" isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      
+      {/* Mobile Drawer Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-dark/40 backdrop-blur-sm z-30 md:hidden" 
+          onClick={() => setMobileMenuOpen(false)} 
+        />
+      )}
+
+      {/* Right Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
+        <TopBar title="Seller Overview" onMenuClick={() => setMobileMenuOpen(true)} />
+
+        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+          
+          {/* Section 1: Stat cards row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <StatCard 
+              label="Total Invoices" 
+              value={stats?.totalInvoices || 0} 
+              sub="All time" 
+              color="border-primary" 
+            />
+            <StatCard 
+              label="Accepted" 
+              value={stats?.acceptedCount || 0} 
+              sub="Confirmed by buyer" 
+              color="border-green-500" 
+            />
+            <StatCard 
+              label="Pending" 
+              value={stats?.pendingCount || 0} 
+              sub="Awaiting buyer action" 
+              color="border-yellow-500" 
+            />
+            <StatCard 
+              label="GST Collected" 
+              value={`₹${fmtCurrency(stats?.totals?.grand || 0)}`} 
+              sub="On accepted invoices" 
+              color="border-blue-500" 
+            />
+          </div>
+
+          {/* Section 2: Two columns */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            
+            {/* Left: Invoice Table */}
+            <div className="lg:col-span-2">
+              <InvoiceTable 
+                invoices={invoices} 
+                role="seller" 
+                onRowClick={(inv) => setSelectedInvoice(inv)}
+                onRefresh={fetchData} 
+              />
+            </div>
+
+            {/* Right: GST Summary mini-card */}
+            <div className="bg-white border border-card rounded-2xl p-6 shadow-sm lg:col-span-1 flex flex-col">
+              <h3 className="font-bold text-lg text-dark mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                GST Breakdown
+              </h3>
+              
+              <div className="flex flex-col gap-4 flex-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">CGST</span>
+                  <span className="font-bold text-sm text-dark">₹{fmtCurrency(gstData?.cgst || 0)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">SGST</span>
+                  <span className="font-bold text-sm text-dark">₹{fmtCurrency(gstData?.sgst || 0)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">IGST</span>
+                  <span className="font-bold text-sm text-dark">₹{fmtCurrency(gstData?.igst || 0)}</span>
+                </div>
+                
+                <hr className="border-card my-1" />
+                
+                <div className="flex justify-between items-center mb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-dark">Total GST</span>
+                  <span className="font-bold text-lg text-primary">
+                    ₹{fmtCurrency((gstData?.cgst || 0) + (gstData?.sgst || 0) + (gstData?.igst || 0))}
+                  </span>
+                </div>
+
+                {/* React Recharts implementation used natively in place of external Chart.js to utilize existing module */}
+                <div className="h-[160px] w-full mt-auto">
+                  {gstData?.history && gstData.history.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={gstData.history}>
+                        <Tooltip cursor={{ fill: 'rgba(55, 85, 52, 0.05)' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                        <Bar dataKey="total" fill="#375534" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center text-xs font-medium text-secondary/60 bg-bg/50 rounded-lg">
+                      No GST history available
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Invoice Requests row */}
+          <div>
+            <h3 className="font-bold text-lg text-dark mb-4" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+              Incoming Invoice Requests
+            </h3>
+            
+            {requests.length > 0 ? (
+              <div className="flex flex-wrap gap-4">
+                {requests.map((req) => (
+                  <div key={req._id || req.id} className="bg-white border border-card rounded-xl p-5 w-64 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div>
+                      <div className="font-mono text-xs font-bold text-dark tracking-wide">{req.buyerGstin}</div>
+                      <div className="text-xs text-secondary mt-1.5 italic min-h-[32px]">"{req.note || 'No additional note provided'}"</div>
+                      <div className="text-[10px] uppercase font-bold tracking-widest text-secondary mt-3">
+                        {new Date(req.date || req.createdAt).toLocaleDateString('en-GB')}
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => handleFulfillRequest(req._id || req.id)}
+                      className="w-full bg-primary text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-primary/90 transition-colors mt-4"
+                    >
+                      Fulfill Request
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 bg-white/50 border border-card rounded-2xl border-dashed">
+                <span className="text-3xl mb-2 grayscale opacity-60">📭</span>
+                <span className="text-sm font-medium text-secondary">No incoming requests</span>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+
+      {/* View Modal */}
+      {selectedInvoice && (
+        <InvoiceModal
+          invoice={selectedInvoice}
+          onClose={() => setSelectedInvoice(null)}
+          role="seller"
+        />
+      )}
+
+      {/* Create Modal - accessible if you re-bind a trigger button manually later */}
+      {showCreateModal && (
+        <CreateInvoiceModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => { setShowCreateModal(false); fetchData(); }}
+        />
+      )}
+
+    </div>
+  );
 }

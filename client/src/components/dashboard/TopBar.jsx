@@ -1,80 +1,78 @@
-import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
-export default function TopBar({ title, subtitle }) {
-    const { user } = useAuth();
-    const [notifOpen, setNotifOpen] = useState(false);
+export default function TopBar({ title, onMenuClick }) {
+  const { user } = useAuth();
 
-    return (
-        <header className="sticky top-0 z-30 bg-bg/90 backdrop-blur-md border-b border-card/40 px-6 py-4 flex items-center justify-between gap-4">
-            {/* Left */}
-            <div>
-                <h1 className="text-dark font-bold text-xl" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-                    {title}
-                </h1>
-                {subtitle && <p className="text-secondary text-xs mt-0.5">{subtitle}</p>}
-            </div>
+  const getInitials = (name) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
 
-            {/* Right */}
-            <div className="flex items-center gap-3">
-                {/* Search */}
-                <div className="hidden sm:flex items-center gap-2 bg-white/60 border border-card/50 rounded-xl px-3 py-2 text-sm text-secondary hover:border-primary/30 transition-all focus-within:border-primary/40 focus-within:shadow-sm focus-within:shadow-primary/10">
-                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" />
-                        <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    <input
-                        type="text"
-                        placeholder="Search invoices..."
-                        className="bg-transparent outline-none text-dark placeholder-secondary/60 text-xs w-36"
-                    />
-                </div>
+  // Maps correctly to: "Friday, 10 April 2026"
+  const formattedDate = new Intl.DateTimeFormat('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(new Date());
 
-                {/* Notifications */}
-                <div className="relative">
-                    <button
-                        onClick={() => setNotifOpen(!notifOpen)}
-                        className="relative w-9 h-9 rounded-xl bg-white/60 border border-card/50 flex items-center justify-center text-secondary hover:text-dark hover:border-primary/30 transition-all"
-                    >
-                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-                    </button>
+  return (
+    <div className="h-16 bg-bg border-b border-card flex items-center justify-between px-6 sticky top-0 z-30">
+      
+      {/* Left side - Dynamic Page Header */}
+      <div className="flex items-center gap-3">
+        <button 
+          onClick={onMenuClick}
+          className="md:hidden p-1.5 -ml-2 text-dark hover:bg-card/50 rounded-lg transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="flex flex-col justify-center">
+          <h1 className="font-semibold text-lg text-dark leading-none pb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+            {title || "Overview"}
+          </h1>
+        <p className="text-xs text-secondary font-medium tracking-wide">
+          {formattedDate}
+        </p>
+      </div>
+      </div>
 
-                    {notifOpen && (
-                        <div className="absolute right-0 top-11 w-72 bg-white rounded-2xl shadow-2xl border border-card/40 z-50 overflow-hidden">
-                            <div className="px-4 py-3 border-b border-card/30 flex items-center justify-between">
-                                <span className="font-bold text-dark text-sm" style={{ fontFamily: 'Plus Jakarta Sans' }}>Notifications</span>
-                                <button onClick={() => setNotifOpen(false)} className="text-secondary hover:text-dark text-xs">Mark all read</button>
-                            </div>
-                            {[
-                                { msg: 'INV-2402 approved by Tata Consultancy', time: '2m ago', dot: 'bg-primary' },
-                                { msg: 'Payment received for INV-2398 — ₹45,000', time: '1h ago', dot: 'bg-green-500' },
-                                { msg: 'INV-2395 overdue by 5 days', time: '3h ago', dot: 'bg-red-500' },
-                            ].map(({ msg, time, dot }) => (
-                                <div key={msg} className="px-4 py-3 border-b border-card/20 hover:bg-bg/50 transition-colors flex items-start gap-3 cursor-pointer">
-                                    <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${dot}`} />
-                                    <div>
-                                        <p className="text-dark text-xs">{msg}</p>
-                                        <p className="text-secondary text-xs mt-0.5">{time}</p>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className="px-4 py-2.5 text-center">
-                                <button className="text-primary text-xs font-semibold hover:text-dark transition-colors">
-                                    View all notifications →
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
+      {/* Right side - Controls */}
+      <div className="flex items-center gap-4">
+        
+        {/* Search */}
+        <div className="relative hidden sm:block">
+          <input
+            type="text"
+            placeholder="Search invoices..."
+            className="bg-white border border-card rounded-xl px-4 py-2 pl-10 text-sm w-48 focus:w-56 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all duration-300 placeholder-secondary/60 text-dark font-medium shadow-sm"
+          />
+          <svg className="w-4 h-4 text-secondary absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
 
-                {/* Avatar */}
-                <div className="w-9 h-9 rounded-xl bg-dark flex items-center justify-center text-white text-xs font-bold flex-shrink-0 cursor-pointer hover:bg-primary transition-colors">
-                    {user?.name?.[0]?.toUpperCase() || 'U'}
-                </div>
-            </div>
-        </header>
-    );
+        {/* Notification Bell */}
+        <div className="relative w-9 h-9 bg-white border border-card rounded-xl flex items-center justify-center cursor-pointer hover:bg-card/30 hover:border-card/80 transition-colors shadow-sm group">
+          <svg className="w-4 h-4 text-dark/80 group-hover:text-dark transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          {/* Unread dot */}
+          <span className="w-2 h-2 bg-red-400 rounded-full absolute top-1.5 right-1.5 border border-white shadow-sm" />
+        </div>
+
+        {/* User Avatar */}
+        <div 
+          className="w-9 h-9 rounded-xl bg-primary flex flex-shrink-0 items-center justify-center font-bold text-xs text-white shadow-md border-2 border-transparent hover:border-primary/20 cursor-pointer transition-all" 
+          style={{ fontFamily: 'Plus Jakarta Sans' }}
+          title={user?.name || "User"}
+        >
+          {getInitials(user?.name)}
+        </div>
+        
+      </div>
+    </div>
+  );
 }

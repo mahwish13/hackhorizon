@@ -1,99 +1,143 @@
-const features = [
-    {
-        icon: (
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9l-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M13 2v7h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        ),
-        title: 'Smart Invoice Builder',
-        desc: 'Create GST-compliant invoices in seconds with auto-filled templates, line-item calculations, and PDF export.',
-    },
-    {
-        icon: (
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        ),
-        title: 'Buyer-Seller Collaboration',
-        desc: 'Buyers can view, approve, flag, or dispute invoices in real-time — no email chains, no confusion.',
-    },
-    {
-        icon: (
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        ),
-        title: 'Real-time Analytics',
-        desc: 'Track revenue trends, overdue amounts, and GST summaries with interactive charts and exportable reports.',
-    },
-    {
-        icon: (
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" strokeWidth="2" />
-                <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" strokeWidth="2" />
-            </svg>
-        ),
-        title: 'Payment Tracking',
-        desc: 'Automatically sync payment statuses from Razorpay, PayU, and bank feeds — always know what\'s owed.',
-    },
-    {
-        icon: (
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        ),
-        title: 'GST Compliance Engine',
-        desc: 'Auto-compute IGST, CGST, SGST. Generate GSTR-1 ready summaries and stay audit-proof.',
-    },
-    {
-        icon: (
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        ),
-        title: 'Smart Notifications',
-        desc: 'Get instant alerts for due dates, payment receipts, disputes, and approval requests via email or in-app.',
-    },
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+const featuresList = [
+  {
+    id: 1,
+    title: "Invoice Upload",
+    description: "Sellers can create and upload invoices instantly with all GST-required fields. Set buyer GSTIN, add tax breakdowns (CGST, SGST, IGST), and submit in seconds. Every invoice is tracked from creation to payment.",
+    videoPlaceholder: "Invoice Upload Demo"
+  },
+  {
+    id: 2,
+    title: "Buyer Validation",
+    description: "Buyers get a clean dashboard showing all received invoices. Accept, reject, or request modification with a single click. Every action is logged with a timestamp and optional note for full audit trail.",
+    videoPlaceholder: "Buyer Validation Demo"
+  },
+  {
+    id: 3,
+    title: "Status Tracking",
+    description: "Every invoice moves through a clear lifecycle: Pending → Accepted / Rejected / Modified. Color-coded badges make status instantly scannable. The full history of status changes is available per invoice.",
+    videoPlaceholder: "Status Tracking Demo"
+  },
+  {
+    id: 4,
+    title: "GST Summary",
+    description: "Auto-calculated GST dashboard showing CGST, SGST, and IGST breakdowns. Separate views for GST collected (seller) and GST payable (buyer). Charts update as invoices are accepted.",
+    videoPlaceholder: "GST Summary Demo"
+  },
+  {
+    id: 5,
+    title: "Payment Tracking",
+    description: "Sellers mark invoices as Paid or Unpaid with one click. Buyers see outstanding amounts at a glance. Dashboard tiles show total billed, total received, and pending amounts.",
+    videoPlaceholder: "Payment Tracking Demo"
+  },
+  {
+    id: 6,
+    title: "Invoice Requests",
+    description: "Buyers can request missing invoices directly from the platform. Sellers see all incoming requests in one place and can fulfil them instantly. No more chasing invoices over email.",
+    videoPlaceholder: "Invoice Requests Demo"
+  }
 ];
 
 export default function Features() {
-    return (
-        <section id="features" className="py-24 bg-bg">
-            <div className="max-w-6xl mx-auto px-6">
-                <div className="text-center mb-16">
-                    <span className="inline-block bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
-                        Features
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-dark mb-4"
-                        style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                        Everything you need to
-                        <br />manage B2B invoicing
-                    </h2>
-                    <p className="text-secondary text-lg max-w-xl mx-auto">
-                        From creation to payment, InvoiceSync handles every step of your invoice lifecycle.
-                    </p>
-                </div>
+  const [activeFeature, setActiveFeature] = useState(featuresList[0]);
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {features.map(({ icon, title, desc }) => (
-                        <div
-                            key={title}
-                            className="group bg-white/60 backdrop-blur-sm border border-card/60 rounded-2xl p-6 hover:bg-white hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
-                        >
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                {icon}
-                            </div>
-                            <h3 className="text-dark font-bold text-lg mb-2" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                                {title}
-                            </h3>
-                            <p className="text-secondary text-sm leading-relaxed">{desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <section id="features" className="bg-bg py-24 px-6 md:px-10">
+      {/* Section Header */}
+      <div className="text-center mb-16 flex flex-col items-center">
+        <div className="bg-dark/10 text-dark rounded-full px-4 py-1.5 text-xs font-medium flex items-center mb-6">
+          <span className="w-2 h-2 rounded-full bg-primary inline-block mr-2" />
+          What we offer
+        </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-dark" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+          Built for real B2B workflows
+        </h2>
+        <p className="text-sm text-secondary mt-3 max-w-xl mx-auto" style={{ fontFamily: 'Inter' }}>
+          Every feature is designed around how sellers and buyers actually work together.
+        </p>
+      </div>
+
+      {/* Feature Pills */}
+      <div className="flex flex-wrap justify-center gap-3 mb-12 max-w-4xl mx-auto">
+        {featuresList.map((feature) => (
+          <button
+            key={feature.id}
+            onClick={() => setActiveFeature(feature)}
+            className={`rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300 ${
+              activeFeature.id === feature.id
+                ? 'bg-dark text-white border border-dark scale-105 shadow-md'
+                : 'bg-card/40 text-dark border border-card hover:bg-card/70'
+            }`}
+          >
+            {feature.title}
+          </button>
+        ))}
+      </div>
+
+      {/* Content Area */}
+      <div className="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+        
+        {/* Left Column (Description) */}
+        {/* Using the key prop to force re-render and trigger animation on state change */}
+        <div 
+          key={`text-${activeFeature.id}`} 
+          className="flex flex-col items-start animate-fade-in"
+        >
+          <div className="text-6xl font-extrabold text-card/60" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+            0{activeFeature.id}
+          </div>
+          <h3 className="text-2xl font-bold text-dark mt-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+            {activeFeature.title}
+          </h3>
+          <p className="text-sm leading-relaxed text-secondary mt-4 max-w-md" style={{ fontFamily: 'Inter' }}>
+            {activeFeature.description}
+          </p>
+          <Link
+            to="/login"
+            className="text-primary text-sm font-semibold mt-6 hover:text-dark transition-colors inline-flex items-center gap-1 group"
+          >
+            Learn more <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </Link>
+        </div>
+
+        {/* Right Column (Video Placeholder) */}
+        <div 
+          key={`video-${activeFeature.id}`} 
+          className="bg-dark rounded-[2rem] aspect-video flex flex-col items-center justify-center relative overflow-hidden shadow-xl animate-fade-in-delayed"
+        >
+          {/* Fake Play Button - interactive look */}
+          <div className="w-16 h-16 rounded-full bg-primary/20 backdrop-blur-sm flex items-center justify-center mb-4 cursor-pointer hover:bg-primary/40 hover:scale-110 transition-all z-10 border border-primary/10">
+            {/* Play triangle */}
+            <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M4 4l12 6-12 6V4z" />
+            </svg>
+          </div>
+          <p className="text-secondary/90 text-sm font-medium z-10 text-center px-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+            {activeFeature.videoPlaceholder}
+          </p>
+          
+          {/* Subtle background glow for premium aesthetics */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl z-0 pointer-events-none" />
+        </div>
+
+      </div>
+
+      {/* Minimal CSS for dynamic mounting animations */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-fade-in-delayed {
+          animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+          opacity: 0;
+        }
+      `}</style>
+    </section>
+  );
 }
