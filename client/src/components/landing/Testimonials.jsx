@@ -1,130 +1,119 @@
 const testimonialsData = [
-  { name: "Arjun Mehta", role: "CFO, Mehta Textiles", text: "We used to spend 3 days every month reconciling invoices. With InvoiceSync, buyers confirm the same day. Our DSO dropped by 40%.", rating: 5, initials: "AM", color: "#375534" },
-  { name: "Priya Nair", role: "Accounts Head, Nair Pharma", text: "The GST breakdown dashboard alone saved us 8 hours per month. CGST and SGST are auto-calculated and always accurate.", rating: 5, initials: "PN", color: "#0F2A1D" },
-  { name: "Rohit Sharma", role: "Founder, RS Traders", text: "Chasing buyers for invoice confirmation was a nightmare. Now they get notified, they click accept, we get paid. Simple.", rating: 5, initials: "RS", color: "#6B9071" },
-  { name: "Sneha Kulkarni", role: "Operations Lead, SKL Exports", text: "The status tracking feature is incredible. Every team member can see exactly where an invoice stands without asking anyone.", rating: 4, initials: "SK", color: "#375534" },
-  { name: "Vikram Joshi", role: "Director, Joshi Industrial", text: "We handle 500+ invoices a month. InvoiceSync's buyer dashboard makes validation 10x faster. Worth every rupee.", rating: 5, initials: "VJ", color: "#0F2A1D" },
-  { name: "Meera Patel", role: "Finance Manager, Patel Goods", text: "The missing invoice request feature is a gem. No more emails. Buyer clicks request, we upload, done.", rating: 5, initials: "MP", color: "#6B9071" }
+  { name: "Arjun Mehta",     role: "CFO",               company: "Mehta Textiles",  text: "We used to spend 3 days every month reconciling invoices. With InvoiceSync, buyers confirm the same day. Our DSO dropped by 40%.", rating: 5, initials: "AM" },
+  { name: "Priya Nair",      role: "Accounts Head",      company: "Nair Pharma",     text: "The GST breakdown dashboard alone saved us 8 hours per month. CGST and SGST are auto-calculated and always accurate.", rating: 5, initials: "PN" },
+  { name: "Rohit Sharma",    role: "Founder",            company: "RS Traders",      text: "Chasing buyers for invoice confirmation was a nightmare. Now they get notified, they click accept, we get paid. Simple.", rating: 5, initials: "RS" },
+  { name: "Sneha Kulkarni",  role: "Operations Lead",    company: "SKL Exports",     text: "The status tracking feature is incredible. Every team member can see exactly where an invoice stands without asking anyone.", rating: 4, initials: "SK" },
+  { name: "Vikram Joshi",    role: "Director",           company: "Joshi Industrial",text: "We handle 500+ invoices a month. InvoiceSync's buyer dashboard makes validation 10x faster. Worth every rupee.", rating: 5, initials: "VJ" },
+  { name: "Meera Patel",     role: "Finance Manager",    company: "Patel Goods",     text: "The missing invoice request feature is a gem. No more emails. Buyer clicks request, we upload, done.", rating: 5, initials: "MP" }
 ];
 
-// Duplicated array for seamless horizontal loop on mobile
 const mobileTestimonials = [...testimonialsData, ...testimonialsData];
 
-export default function Testimonials() {
+const avatarColors = ['#166534', '#14532d', '#15803d', '#16a34a', '#4ade80', '#86efac'];
 
+export default function Testimonials() {
   const renderStars = (rating) => (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={`text-base ${i < rating ? 'text-primary' : 'text-white/20'}`}>
-          ★
-        </span>
+        <span key={i} className={`text-sm ${i < rating ? 'text-[#4ade80]' : 'text-[#243124]'}`}>★</span>
       ))}
     </div>
   );
 
-  const TestimonialCard = ({ t, isMobile }) => {
-    const parts = t.role.split(', ');
-    const roleTitle = parts[0];
-    const companyName = parts[1] || parts[0];
+  const TestimonialCard = ({ t, idx, isMobile }) => (
+    <div className={`break-inside-avoid bg-[#111a15] border border-[#243124] rounded-2xl p-6 hover:border-[#2e4030] transition-all duration-300 group ${
+      isMobile ? 'inline-block w-[300px] whitespace-normal flex-shrink-0' : 'mb-5 w-full'
+    }`}>
+      {/* Stars */}
+      <div className="mb-4">{renderStars(t.rating)}</div>
 
-    return (
-      <div 
-        className={`break-inside-avoid bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 hover:bg-white/10 transition-colors shadow-lg ${isMobile ? 'inline-block w-[320px] whitespace-normal' : 'w-full'}`}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-inner uppercase tracking-wider"
-              style={{ backgroundColor: t.color, fontFamily: 'Plus Jakarta Sans' }}
-            >
-              {t.initials}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-white leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>{t.name}</span>
-              <span className="text-xs text-secondary mt-0.5">{roleTitle}</span>
-            </div>
-          </div>
-          <div>
-            {renderStars(t.rating)}
-          </div>
+      {/* Quote */}
+      <p className="text-[#6b8f76] text-sm leading-relaxed group-hover:text-[#e8f5ec] transition-colors duration-300 mb-6">
+        "{t.text}"
+      </p>
+
+      {/* Author */}
+      <div className="flex items-center gap-3 pt-4 border-t border-[#243124]">
+        <div
+          className="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white"
+          style={{ backgroundColor: avatarColors[idx % avatarColors.length], fontFamily: 'Plus Jakarta Sans' }}
+        >
+          {t.initials}
         </div>
-        
-        <p className="mt-5 text-sm text-[#AEC3B0] leading-relaxed italic" style={{ fontFamily: 'Inter' }}>
-          "{t.text}"
-        </p>
-
-        <div className="mt-5 border-t border-white/10 pt-4 flex items-center">
-          <span className="inline-block bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider">
-            {companyName}
-          </span>
+        <div>
+          <div className="text-sm font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>{t.name}</div>
+          <div className="text-[11px] text-[#3d5945] font-medium">{t.role}, {t.company}</div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
-    <section id="testimonials" className="bg-dark py-24 px-0 md:px-10 overflow-hidden">
-      
+    <section id="testimonials" className="bg-[#0a0f0d] py-28 px-0 md:px-10 overflow-hidden relative">
+      {/* bg glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#4ade80]/4 rounded-full blur-[140px] pointer-events-none" />
+
       {/* Header */}
-      <div className="text-center mb-16 px-6 max-w-2xl mx-auto flex flex-col items-center">
-        <div className="inline-flex bg-primary/20 text-primary rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-6">
+      <div className="text-center mb-16 px-6 max-w-2xl mx-auto flex flex-col items-center relative">
+        <div className="inline-flex items-center gap-2 border border-[#4ade80]/20 bg-[#4ade80]/8 text-[#4ade80] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" />
           What our users say
         </div>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+        <h2
+          className="text-[clamp(1.8rem,4vw,2.75rem)] font-extrabold text-white leading-tight mb-4"
+          style={{ fontFamily: 'Plus Jakarta Sans' }}
+        >
           Real businesses. Real results.
         </h2>
-        <p className="text-sm text-secondary mt-3 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+        <p className="text-[#6b8f76] text-base leading-relaxed">
           Thousands of Indian businesses use InvoiceSync to close their invoice cycles faster.
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Desktop Masonry Grid (Hidden on Mobile) */}
+      <div className="max-w-7xl mx-auto relative">
+        {/* Desktop masonry */}
         <div className="hidden md:block w-full px-6">
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-5">
             {testimonialsData.map((t, i) => (
-              <TestimonialCard key={`desktop-${i}`} t={t} isMobile={false} />
+              <TestimonialCard key={`desktop-${i}`} t={t} idx={i} isMobile={false} />
             ))}
           </div>
         </div>
 
-        {/* Mobile Horizontal Marquee (Hidden on Desktop) */}
-        <div className="block md:hidden relative w-full overflow-hidden group">
-          <div 
-            className="flex w-max gap-4 px-4 group-hover:[animation-play-state:paused]" 
+        {/* Mobile horizontal scroll */}
+        <div className="block md:hidden relative w-full overflow-hidden group px-4">
+          <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-[#0a0f0d] to-transparent z-10" />
+          <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-[#0a0f0d] to-transparent z-10" />
+          <div
+            className="flex w-max gap-4 group-hover:[animation-play-state:paused]"
             style={{ animation: 'scrollLeftMobile 30s linear infinite' }}
           >
             {mobileTestimonials.map((t, i) => (
-              <TestimonialCard key={`mobile-${i}`} t={t} isMobile={true} />
+              <TestimonialCard key={`mobile-${i}`} t={t} idx={i} isMobile={true} />
             ))}
           </div>
         </div>
-
       </div>
 
-      {/* Footer Metrics */}
-      <div className="mt-20 text-center flex flex-col items-center px-6">
-        <div className="flex gap-1 mb-4">
+      {/* Rating footer */}
+      <div className="mt-20 text-center flex flex-col items-center px-6 relative">
+        <div className="flex gap-1 mb-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} className="text-primary text-[24px]">★</span>
+            <span key={i} className="text-[#4ade80] text-2xl">★</span>
           ))}
         </div>
-        <div className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-          4.9/5 average rating from 2,000+ businesses
+        <div className="text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+          4.9/5 average rating
         </div>
-        <div className="text-xs text-secondary uppercase tracking-widest font-semibold mt-1">
-          Based on verified user feedback
-        </div>
+        <div className="text-sm text-[#6b8f76]">From 2,000+ verified Indian businesses</div>
       </div>
 
       <style>{`
         @keyframes scrollLeftMobile {
           from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          to   { transform: translateX(-50%); }
         }
       `}</style>
-
     </section>
   );
 }

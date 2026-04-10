@@ -17,7 +17,6 @@ export default function BuyerDashboard() {
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Request form state
   const [reqSellerGstin, setReqSellerGstin] = useState('');
   const [reqNote, setReqNote] = useState('');
   const [reqLoading, setReqLoading] = useState(false);
@@ -41,22 +40,17 @@ export default function BuyerDashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const handleRequestSubmit = async (e) => {
     e.preventDefault();
     setReqLoading(true);
     try {
-      await api.post('/requests', { 
-        sellerGstin: reqSellerGstin.toUpperCase(), 
-        note: reqNote 
-      });
+      await api.post('/requests', { sellerGstin: reqSellerGstin.toUpperCase(), note: reqNote });
       alert('Request sent successfully');
       setReqSellerGstin('');
       setReqNote('');
-      fetchData(); // Refresh list
+      fetchData();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to send request');
     } finally {
@@ -76,139 +70,116 @@ export default function BuyerDashboard() {
 
   if (loading) {
     return (
-      <div className="flex bg-bg h-screen overflow-hidden">
+      <div className="flex bg-[#0a0f0d] h-screen overflow-hidden">
         <Sidebar role="buyer" />
         <div className="flex-1 flex items-center justify-center">
-          <span className="animate-spin border-4 border-primary border-t-transparent rounded-full w-8 h-8" />
+          <div className="flex flex-col items-center gap-3">
+            <span className="w-10 h-10 border-2 border-[#4ade80]/20 border-t-[#4ade80] rounded-full spin" />
+            <span className="text-sm text-[#3d5945] font-medium">Loading dashboard...</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-bg font-body relative">
-      {/* Left Sidebar */}
+    <div className="flex h-screen overflow-hidden bg-[#0a0f0d] relative">
       <Sidebar role="buyer" isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
-      
-      {/* Mobile Drawer Backdrop */}
+
       {mobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-dark/40 backdrop-blur-sm z-30 md:hidden" 
-          onClick={() => setMobileMenuOpen(false)} 
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
-      {/* Right Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopBar title="Buyer Overview" onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8">
-          
-          {/* Section 1: Stat cards row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <StatCard 
-              label="Invoices Received" 
-              value={stats?.totalReceived || 0} 
-              sub="From all sellers" 
-              color="border-primary" 
-            />
-            <StatCard 
-              label="Pending Review" 
-              value={stats?.pendingCount || 0} 
-              sub="Needs your action" 
-              color="border-yellow-500" 
-            />
-            <StatCard 
-              label="GST Payable" 
-              value={`₹${fmtCurrency(stats?.totals?.grand || 0)}`} 
-              sub="On accepted invoices" 
-              color="border-red-400" 
-            />
-            <StatCard 
-              label="Outstanding" 
-              value={`₹${fmtCurrency(stats?.totalOutstanding || 0)}`} 
-              sub="Unpaid invoices" 
-              color="border-orange-400" 
-            />
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-5 md:p-7 space-y-6">
+
+          {/* Page header */}
+          <div>
+            <h2 className="text-lg font-bold text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>Dashboard</h2>
+            <p className="text-xs text-[#3d5945] mt-0.5">Review and manage your received invoices</p>
           </div>
 
-          {/* Section 2: Two columns */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-            
-            {/* Left: Invoice Table */}
+          {/* Stat Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard label="Invoices Received" value={stats?.totalReceived || 0}                        sub="From all sellers"       color="border-primary"      />
+            <StatCard label="Pending Review"     value={stats?.pendingCount || 0}                        sub="Needs your action"      color="border-yellow-500"   />
+            <StatCard label="GST Payable"        value={`₹${fmtCurrency(stats?.totals?.grand || 0)}`}   sub="On accepted invoices"   color="border-red-400"      />
+            <StatCard label="Outstanding"        value={`₹${fmtCurrency(stats?.totalOutstanding || 0)}`} sub="Unpaid invoices"       color="border-orange-400"   />
+          </div>
+
+          {/* Invoice Table + GST Card */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
             <div className="xl:col-span-2">
-              <InvoiceTable 
+              <InvoiceTable
                 title="Received Invoices"
-                invoices={invoices} 
-                role="buyer" 
+                invoices={invoices}
+                role="buyer"
                 onRowClick={(inv) => setSelectedInvoice(inv)}
-                onRefresh={fetchData} 
+                onRefresh={fetchData}
               />
             </div>
 
-            {/* Right: GST Summary mini-card */}
-            <div className="bg-white border border-card rounded-2xl p-6 shadow-sm xl:col-span-1 flex flex-col h-full">
-              <h3 className="font-bold text-lg text-dark mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-                My GST Payable
-              </h3>
-              
-              <div className="flex flex-col gap-4 flex-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">CGST</span>
-                  <span className="font-bold text-sm text-dark">₹{fmtCurrency(gstData?.cgst || 0)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">SGST</span>
-                  <span className="font-bold text-sm text-dark">₹{fmtCurrency(gstData?.sgst || 0)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-secondary">IGST</span>
-                  <span className="font-bold text-sm text-dark">₹{fmtCurrency(gstData?.igst || 0)}</span>
-                </div>
-                
-                <hr className="border-card my-1" />
-                
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-xs font-bold uppercase tracking-wider text-dark">Total GST</span>
-                  <span className="font-bold text-lg text-primary">
+            {/* GST Summary */}
+            <div className="bg-[#111a15] border border-[#243124] rounded-2xl p-6 flex flex-col">
+              <h3 className="font-bold text-base text-white mb-5" style={{ fontFamily: 'Plus Jakarta Sans' }}>My GST Payable</h3>
+
+              <div className="flex flex-col gap-4 mb-5">
+                {[
+                  { label: 'CGST', value: gstData?.cgst || 0 },
+                  { label: 'SGST', value: gstData?.sgst || 0 },
+                  { label: 'IGST', value: gstData?.igst || 0 },
+                ].map(({ label, value }) => (
+                  <div key={label} className="flex justify-between items-center">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#3d5945]">{label}</span>
+                    <span className="font-bold text-sm text-white">₹{fmtCurrency(value)}</span>
+                  </div>
+                ))}
+                <div className="border-t border-[#243124] pt-4 flex justify-between items-center">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#6b8f76]">Total GST</span>
+                  <span className="font-bold text-lg text-[#4ade80]">
                     ₹{fmtCurrency((gstData?.cgst || 0) + (gstData?.sgst || 0) + (gstData?.igst || 0))}
                   </span>
                 </div>
+              </div>
 
-                <div className="h-[160px] w-full mt-auto">
-                  {gstData?.history && gstData.history.length > 0 ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={gstData.history}>
-                        <Tooltip cursor={{ fill: 'rgba(55, 85, 52, 0.05)' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                        <Bar dataKey="total" fill="#375534" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center text-xs font-medium text-secondary/60 bg-bg/50 rounded-lg">
-                      No GST history available
-                    </div>
-                  )}
-                </div>
+              <div className="h-[140px] w-full mt-auto">
+                {gstData?.history && gstData.history.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={gstData.history}>
+                      <Tooltip
+                        cursor={{ fill: 'rgba(74,222,128,0.04)' }}
+                        contentStyle={{ background: '#192319', border: '1px solid #243124', borderRadius: '10px', fontSize: '12px', color: '#e8f5ec' }}
+                      />
+                      <Bar dataKey="total" fill="#4ade80" radius={[4, 4, 0, 0]} opacity={0.8} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center text-xs text-[#3d5945] bg-[#0f1812] rounded-xl border border-[#243124] font-medium">
+                    No GST history yet
+                  </div>
+                )}
               </div>
             </div>
-
           </div>
 
-          {/* Section 3: Invoice Requests */}
-          <div className="flex gap-6 flex-wrap lg:flex-nowrap items-start">
-            
-            {/* Request Missing Invoice Card */}
-            <div className="bg-white border border-card rounded-2xl p-6 shadow-sm w-full lg:max-w-md">
-              <h3 className="font-bold text-lg text-dark leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+          {/* Invoice Request Section */}
+          <div className="flex gap-5 flex-wrap lg:flex-nowrap items-start">
+
+            {/* Request Form */}
+            <div className="bg-[#111a15] border border-[#243124] rounded-2xl p-6 w-full lg:max-w-sm flex-shrink-0">
+              <h3 className="font-bold text-base text-white mb-1" style={{ fontFamily: 'Plus Jakarta Sans' }}>
                 Request a Missing Invoice
               </h3>
-              <p className="text-xs text-secondary mt-1 tracking-wide mb-6">
-                Ask a seller to upload an invoice you're missing
-              </p>
+              <p className="text-xs text-[#3d5945] mb-6">Ask a seller to upload an invoice you're missing</p>
 
               <form onSubmit={handleRequestSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-dark uppercase tracking-wider mb-1.5">Seller GSTIN</label>
+                  <label className="block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em] mb-2">Seller GSTIN</label>
                   <input
                     type="text"
                     required
@@ -216,65 +187,67 @@ export default function BuyerDashboard() {
                     value={reqSellerGstin}
                     onChange={(e) => setReqSellerGstin(e.target.value)}
                     placeholder="27AAPFU0939F1ZV"
-                    className="w-full bg-bg border border-card/60 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium text-dark uppercase placeholder-secondary/60 font-mono"
+                    className="w-full bg-[#0f1812] border border-[#243124] rounded-xl px-4 py-3 text-sm text-white font-mono uppercase placeholder-[#3d5945] outline-none focus:border-[#4ade80]/40 focus:ring-2 focus:ring-[#4ade80]/8 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-dark uppercase tracking-wider mb-1.5">Note (optional)</label>
+                  <label className="block text-[11px] font-bold text-[#6b8f76] uppercase tracking-[0.12em] mb-2">Note <span className="normal-case text-[#3d5945] font-medium">(optional)</span></label>
                   <textarea
                     rows={3}
                     value={reqNote}
                     onChange={(e) => setReqNote(e.target.value)}
                     placeholder="e.g. Invoice for March order of 500 units"
-                    className="w-full bg-bg border border-card/60 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium text-dark placeholder-secondary/60 resize-none"
+                    className="w-full bg-[#0f1812] border border-[#243124] rounded-xl px-4 py-3 text-sm text-white placeholder-[#3d5945] outline-none focus:border-[#4ade80]/40 focus:ring-2 focus:ring-[#4ade80]/8 transition-all resize-none font-medium"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={reqLoading}
-                  className="w-full bg-dark text-white rounded-xl px-6 py-3 text-sm font-semibold hover:bg-primary transition-colors disabled:opacity-50 mt-1"
+                  className="w-full bg-[#4ade80] hover:bg-[#86efac] text-[#0a0f0d] rounded-xl py-3 text-sm font-bold transition-all shadow-lg shadow-[#4ade80]/20 disabled:opacity-50"
+                  style={{ fontFamily: 'Plus Jakarta Sans' }}
                 >
                   {reqLoading ? 'Sending...' : 'Send Request'}
                 </button>
               </form>
             </div>
 
-            {/* List of Your Requests */}
-            <div className="w-full lg:flex-1 bg-white border border-card/60 shadow-sm p-6 rounded-2xl min-h-[340px]">
-              <h4 className="text-xs font-bold text-secondary uppercase tracking-widest mb-4">
-                Your Requests
-              </h4>
-              
-              <div className="flex flex-col">
-                {myRequests.length > 0 ? (
-                  myRequests.map((req) => (
-                    <div key={req._id || req.id} className="flex items-start gap-4 border-b border-bg py-4 last:border-none group">
-                      <div className="flex flex-col">
-                        <span className="font-mono text-[13px] font-extrabold tracking-wide text-dark">{req.sellerGstin}</span>
-                        <span className="text-xs text-secondary mt-1.5 italic">"{req.note || 'No additional note provided'}"</span>
+            {/* Requests List */}
+            <div className="flex-1 bg-[#111a15] border border-[#243124] rounded-2xl p-6 min-h-[300px]">
+              <h4 className="text-[11px] font-bold text-[#3d5945] uppercase tracking-[0.14em] mb-5">Your Requests</h4>
+
+              {myRequests.length > 0 ? (
+                <div className="flex flex-col divide-y divide-[#1a2a1f]">
+                  {myRequests.map((req) => (
+                    <div key={req._id || req.id} className="flex items-start gap-4 py-4 group">
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="font-mono text-sm font-bold text-white tracking-wide">{req.sellerGstin}</span>
+                        <span className="text-xs text-[#6b8f76] mt-1 italic truncate">"{req.note || 'No additional note provided'}"</span>
                       </div>
-                      <div className="flex flex-col items-end gap-2 ml-auto">
+                      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                         <StatusBadge status={req.status} />
-                        <span className="text-[10px] uppercase font-semibold tracking-wider text-secondary/80">
+                        <span className="text-[10px] uppercase font-semibold tracking-wider text-[#3d5945]">
                           {formatDate(req.date || req.createdAt)}
                         </span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-10">
-                    <span className="text-2xl mb-2 opacity-50 grayscale">📭</span>
-                    <span className="text-xs font-medium text-secondary/80">No requests sent yet</span>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-12 h-12 rounded-2xl bg-[#192319] border border-[#243124] flex items-center justify-center mb-3">
+                    <svg className="w-6 h-6 text-[#3d5945]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
                   </div>
-                )}
-              </div>
+                  <span className="text-sm font-semibold text-[#3d5945]">No requests sent yet</span>
+                </div>
+              )}
             </div>
-
           </div>
+
         </div>
       </div>
 
-      {/* View Modal */}
       {selectedInvoice && (
         <InvoiceModal
           invoice={selectedInvoice}
@@ -282,7 +255,6 @@ export default function BuyerDashboard() {
           role="buyer"
         />
       )}
-
     </div>
   );
 }

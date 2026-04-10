@@ -4,153 +4,157 @@ import { Link } from 'react-router-dom';
 export default function Pricing() {
   const [isYearly, setIsYearly] = useState(false);
 
-  const CheckIcon = ({ className }) => (
-    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${className}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  const CheckIcon = () => (
+    <svg className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#4ade80]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
     </svg>
   );
 
+  const plans = [
+    {
+      name: 'Starter',
+      desc: 'Perfect for small businesses trying out B2B invoicing',
+      monthlyPrice: '₹0',
+      yearlyPrice: '₹0',
+      cta: 'Get Started Free',
+      ctaLink: '/register',
+      featured: false,
+      features: ['Up to 50 invoices/month', '1 seller account', '1 buyer account', 'Basic GST summary', 'Email support']
+    },
+    {
+      name: 'Growth',
+      desc: 'For growing businesses with regular B2B transactions',
+      monthlyPrice: '₹1,499',
+      yearlyPrice: '₹1,199',
+      cta: 'Start Free Trial',
+      ctaLink: '/register',
+      featured: true,
+      features: ['Unlimited invoices', '5 seller accounts', 'Unlimited buyer accounts', 'Full GST dashboard & charts', 'Invoice request feature', 'Payment tracking', 'Priority support']
+    },
+    {
+      name: 'Enterprise',
+      desc: 'For large organizations with complex invoice workflows',
+      monthlyPrice: 'Custom',
+      yearlyPrice: 'Custom',
+      cta: 'Contact Sales',
+      ctaLink: '/register',
+      featured: false,
+      features: ['Everything in Growth', 'Dedicated account manager', 'Custom GSTIN configurations', 'API access', 'SSO and team management', 'SLA guarantee']
+    }
+  ];
+
   return (
-    <section id="pricing" className="bg-bg py-24 px-6 md:px-10">
-      {/* Header */}
-      <div className="text-center mb-16 max-w-2xl mx-auto flex flex-col items-center">
-        <div className="bg-dark/10 text-dark rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-6">
-          Simple pricing
-        </div>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-dark leading-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>
-          Pay for what you use
-        </h2>
-        <p className="text-sm text-secondary mt-3 leading-relaxed" style={{ fontFamily: 'Inter' }}>
-          No hidden fees. No setup costs. Start free and scale as your business grows.
-        </p>
+    <section id="pricing" className="bg-[#0a0f0d] py-28 px-6 md:px-10 relative overflow-hidden">
+      {/* top glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-[#4ade80]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Toggle */}
-        <div className="mt-8 inline-flex bg-card/40 rounded-full p-1 border border-card/60">
-          <button
-            onClick={() => setIsYearly(false)}
-            className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
-              !isYearly ? 'bg-dark text-white shadow-md' : 'text-dark hover:text-dark/70'
-            }`}
+      <div className="max-w-6xl mx-auto relative">
+
+        {/* Header */}
+        <div className="text-center mb-16 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 border border-[#4ade80]/20 bg-[#4ade80]/8 text-[#4ade80] rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80]" />
+            Simple pricing
+          </div>
+          <h2
+            className="text-[clamp(1.8rem,4vw,2.75rem)] font-extrabold text-white leading-tight mb-4"
+            style={{ fontFamily: 'Plus Jakarta Sans' }}
           >
-            Monthly
-          </button>
-          <button
-            onClick={() => setIsYearly(true)}
-            className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
-              isYearly ? 'bg-dark text-white shadow-md' : 'text-dark hover:text-dark/70'
-            }`}
-          >
-            Yearly <span className="ml-1 text-xs text-primary font-bold bg-white/20 px-1.5 rounded-md">-20%</span>
-          </button>
-        </div>
-      </div>
+            Pay for what you use
+          </h2>
+          <p className="text-[#6b8f76] text-base max-w-md mx-auto leading-relaxed mb-10">
+            No hidden fees. No setup costs. Start free and scale as your business grows.
+          </p>
 
-      {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-center">
-        
-        {/* Card 1: Starter */}
-        <div className="bg-white border border-card/60 rounded-2xl p-8 flex flex-col h-full hover:shadow-lg transition-shadow">
-          <h3 className="font-bold text-xl text-dark" style={{ fontFamily: 'Plus Jakarta Sans' }}>Starter</h3>
-          <p className="text-xs text-secondary mt-2 min-h-[32px]">Perfect for small businesses trying out B2B invoicing</p>
-          
-          <div className="mt-6 mb-8 flex items-end">
-            <span className="text-5xl font-extrabold text-dark tracking-tight">₹0</span>
-            <span className="text-sm text-secondary font-medium ml-1 mb-1.5">/month</span>
+          {/* Toggle */}
+          <div className="inline-flex bg-[#111a15] rounded-full p-1 border border-[#243124]">
+            <button
+              onClick={() => setIsYearly(false)}
+              className={`rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                !isYearly
+                  ? 'bg-[#4ade80] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/25'
+                  : 'text-[#6b8f76] hover:text-white'
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setIsYearly(true)}
+              className={`rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+                isYearly
+                  ? 'bg-[#4ade80] text-[#0a0f0d] shadow-lg shadow-[#4ade80]/25'
+                  : 'text-[#6b8f76] hover:text-white'
+              }`}
+            >
+              Yearly
+              <span className="text-[10px] font-extrabold bg-[#4ade80]/20 text-[#4ade80] px-1.5 py-0.5 rounded-md border border-[#4ade80]/30 leading-none">
+                -20%
+              </span>
+            </button>
           </div>
+        </div>
 
-          <Link to="/register" className="w-full text-center block bg-card text-dark rounded-xl py-3 font-semibold hover:bg-secondary hover:text-white transition-colors">
-            Get Started Free
-          </Link>
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              className={`relative flex flex-col rounded-2xl p-8 border transition-all duration-300 ${
+                plan.featured
+                  ? 'bg-[#111a15] border-[#4ade80]/40 shadow-2xl shadow-[#4ade80]/10 md:scale-[1.04] z-10'
+                  : 'bg-[#111a15] border-[#243124] hover:border-[#2e4030]'
+              }`}
+            >
+              {plan.featured && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#4ade80] text-[#0a0f0d] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-[#4ade80]/30 whitespace-nowrap">
+                  Most Popular
+                </div>
+              )}
 
-          <div className="mt-8 flex flex-col gap-3.5">
-            {[
-              "Up to 50 invoices/month",
-              "1 seller account",
-              "1 buyer account",
-              "Basic GST summary",
-              "Email support"
-            ].map((feature, i) => (
-              <div key={i} className="flex gap-3 text-sm text-dark font-medium">
-                <CheckIcon className="text-primary" />
-                <span>{feature}</span>
+              <h3 className="font-bold text-xl text-white mb-1 text-center" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                {plan.name}
+              </h3>
+              <p className="text-xs text-[#6b8f76] leading-relaxed min-h-[36px] mb-6 text-center">{plan.desc}</p>
+
+              <div className="flex items-end justify-center gap-1 mb-8">
+                <span
+                  className="text-[2.75rem] font-extrabold text-white leading-none tracking-tight"
+                  style={{ fontFamily: 'Plus Jakarta Sans' }}
+                >
+                  {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
+                </span>
+                {plan.monthlyPrice !== 'Custom' && (
+                  <span className="text-sm text-[#6b8f76] mb-1">/month</span>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Card 2: Growth (Featured) */}
-        <div className="bg-dark border-2 border-primary rounded-2xl p-8 flex flex-col relative md:scale-105 shadow-2xl z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
-            Most Popular
-          </div>
-          
-          <h3 className="font-bold text-xl text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>Growth</h3>
-          <p className="text-xs text-secondary/90 mt-2 min-h-[32px]">For growing businesses with regular B2B transactions</p>
-          
-          <div className="mt-6 mb-8 flex items-end">
-            <span className="text-5xl font-extrabold text-white tracking-tight">
-              {isYearly ? '₹1,199' : '₹1,499'}
-            </span>
-            <span className="text-sm text-secondary font-medium ml-1 mb-1.5">/month</span>
-          </div>
+              <Link
+                to={plan.ctaLink}
+                className={`w-full text-center block rounded-xl py-3.5 text-sm font-bold transition-all duration-300 mb-8 ${
+                  plan.featured
+                    ? 'bg-[#4ade80] text-[#0a0f0d] hover:bg-[#86efac] shadow-lg shadow-[#4ade80]/25 hover:shadow-[#4ade80]/40'
+                    : 'bg-[#192319] text-white border border-[#2e4030] hover:border-[#4ade80]/30 hover:bg-[#243124]'
+                }`}
+                style={{ fontFamily: 'Plus Jakarta Sans' }}
+              >
+                {plan.cta}
+              </Link>
 
-          <Link to="/register" className="w-full text-center block bg-primary text-white rounded-xl py-3 font-semibold hover:bg-primary/80 hover:shadow-lg hover:shadow-primary/20 transition-all">
-            Start Free Trial
-          </Link>
-
-          <div className="mt-8 flex flex-col gap-3.5">
-            {[
-              "Unlimited invoices",
-              "5 seller accounts",
-              "Unlimited buyer accounts",
-              "Full GST dashboard with charts",
-              "Invoice request feature",
-              "Payment tracking",
-              "Priority support"
-            ].map((feature, i) => (
-              <div key={i} className="flex gap-3 text-sm text-card font-medium">
-                <CheckIcon className="text-primary" />
-                <span>{feature}</span>
+              <div className="flex flex-col items-center gap-3.5">
+                {plan.features.map((feature, i) => (
+                  <div key={i} className="flex gap-2 text-sm items-center text-center">
+                    <CheckIcon />
+                    <span className={plan.featured ? 'text-[#e8f5ec]' : 'text-[#6b8f76]'}>{feature}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
-        {/* Card 3: Enterprise */}
-        <div className="bg-white border border-card/60 rounded-2xl p-8 flex flex-col h-full hover:shadow-lg transition-shadow">
-          <h3 className="font-bold text-xl text-dark" style={{ fontFamily: 'Plus Jakarta Sans' }}>Enterprise</h3>
-          <p className="text-xs text-secondary mt-2 min-h-[32px]">For large organizations with complex invoice workflows</p>
-          
-          <div className="mt-6 mb-8 flex items-end">
-            <span className="text-5xl font-extrabold text-dark tracking-tight">Custom</span>
-          </div>
-
-          <Link to="/register" className="w-full text-center block bg-dark text-white rounded-xl py-3 font-semibold hover:bg-primary transition-colors">
-            Contact Sales
-          </Link>
-
-          <div className="mt-8 flex flex-col gap-3.5">
-            {[
-              "Everything in Growth",
-              "Dedicated account manager",
-              "Custom GSTIN configurations",
-              "API access",
-              "SSO and team management",
-              "SLA guarantee"
-            ].map((feature, i) => (
-              <div key={i} className="flex gap-3 text-sm text-dark font-medium">
-                <CheckIcon className="text-primary" />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
+        <div className="mt-12 text-center text-xs text-[#3d5945] font-semibold tracking-wide">
+          All plans include a 14-day free trial. No credit card required.
         </div>
-
-      </div>
-
-      {/* Footer Text */}
-      <div className="mt-12 text-center text-xs font-medium text-secondary">
-        All plans include 14-day free trial. No credit card required.
       </div>
     </section>
   );

@@ -8,27 +8,30 @@ const row2 = [
   'Nykaa Trade', 'Meesho Sellers', 'Razorpay Biz', 'Zepto Commerce', 'Groww Business', 'Paytm B2B'
 ];
 
-// Duplicate the arrays for a seamless loop
 const row1Duplicated = [...row1, ...row1];
 const row2Duplicated = [...row2, ...row2];
 
 export default function Marquee() {
   return (
-    <section className="bg-dark py-10 overflow-hidden border-y border-white/5">
-      <p className="text-xs font-medium text-secondary text-center mb-6 uppercase tracking-widest">
+    <section className="bg-[#0a0f0d] py-14 overflow-hidden border-y border-white/[0.04]">
+      <p className="text-[11px] font-semibold text-[#3d5945] text-center mb-8 uppercase tracking-[0.18em]">
         Trusted by leading businesses across India
       </p>
 
-      {/* Row 1: Scrolls Left */}
-      <div className="relative w-full flex overflow-hidden mb-6 group">
-        <div 
-          className="flex w-max gap-12 group-hover:[animation-play-state:paused]" 
+      {/* Row 1 — scrolls left */}
+      <div className="relative w-full flex overflow-hidden mb-4 group">
+        {/* fade edges */}
+        <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-[#0a0f0d] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-[#0a0f0d] to-transparent z-10 pointer-events-none" />
+
+        <div
+          className="flex w-max gap-3 group-hover:[animation-play-state:paused]"
           style={{ animation: 'scrollLeft 35s linear infinite' }}
         >
           {row1Duplicated.map((name, i) => (
             <div
               key={`r1-${i}`}
-              className="font-semibold text-sm text-card px-6 py-2 border border-white/10 rounded-full whitespace-nowrap hover:border-secondary hover:text-white transition-all cursor-default shadow-sm"
+              className="flex-shrink-0 px-5 py-2 rounded-full border border-[#243124] bg-[#111a15] text-[#6b8f76] text-xs font-semibold whitespace-nowrap hover:border-[#4ade80]/40 hover:text-white hover:bg-[#192319] transition-all cursor-default"
               style={{ fontFamily: 'Plus Jakarta Sans' }}
             >
               {name}
@@ -37,16 +40,19 @@ export default function Marquee() {
         </div>
       </div>
 
-      {/* Row 2: Scrolls Right */}
+      {/* Row 2 — scrolls right */}
       <div className="relative w-full flex overflow-hidden group">
-        <div 
-          className="flex w-max gap-12 group-hover:[animation-play-state:paused]" 
+        <div className="absolute left-0 top-0 w-24 h-full bg-gradient-to-r from-[#0a0f0d] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-[#0a0f0d] to-transparent z-10 pointer-events-none" />
+
+        <div
+          className="flex w-max gap-3 group-hover:[animation-play-state:paused]"
           style={{ animation: 'scrollRight 35s linear infinite' }}
         >
           {row2Duplicated.map((name, i) => (
             <div
               key={`r2-${i}`}
-              className="font-semibold text-sm text-card px-6 py-2 border border-white/10 rounded-full whitespace-nowrap hover:border-secondary hover:text-white transition-all cursor-default shadow-sm"
+              className="flex-shrink-0 px-5 py-2 rounded-full border border-[#243124] bg-[#111a15] text-[#6b8f76] text-xs font-semibold whitespace-nowrap hover:border-[#4ade80]/40 hover:text-white hover:bg-[#192319] transition-all cursor-default"
               style={{ fontFamily: 'Plus Jakarta Sans' }}
             >
               {name}
@@ -58,11 +64,11 @@ export default function Marquee() {
       <style>{`
         @keyframes scrollLeft {
           from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          to   { transform: translateX(-50%); }
         }
         @keyframes scrollRight {
           from { transform: translateX(-50%); }
-          to { transform: translateX(0); }
+          to   { transform: translateX(0); }
         }
       `}</style>
     </section>
