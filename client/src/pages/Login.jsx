@@ -34,7 +34,7 @@ export default function Login() {
     setIsLoading(true);
     setError('');
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email: email.trim().toLowerCase(), password });
       const { user } = res.data.data;
       login(user);
     } catch (err) {

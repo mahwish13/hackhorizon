@@ -41,10 +41,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Mount Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/invoices', invoiceRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/requests', requestRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/invoices', require('./routes/invoices'));
+app.use('/api/requests', require('./routes/requests'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // Root route
 app.get('/', (req, res) => {

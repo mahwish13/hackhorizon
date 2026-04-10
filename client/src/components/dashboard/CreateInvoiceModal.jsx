@@ -1,9 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import api from '../../api/axios';
 import Button from '../shared/Button';
 
 export default function CreateInvoiceModal({ onClose, onCreated }) {
+  const { user } = useAuth();
+
+  const sellerBusinesses = [];
+  if (user?.gstin) sellerBusinesses.push({ name: 'Primary Profile', gstin: user.gstin });
+  if (user?.businesses) {
+    sellerBusinesses.push(...user.businesses.filter(b => b.type === 'seller' || b.type === 'both'));
+  }
+
   const [form, setForm] = useState({
+    sellerGstin: sellerBusinesses[0]?.gstin || '',
     invoiceNumber: '',
     buyerGstin: '',
     amount: '',
@@ -30,6 +40,7 @@ export default function CreateInvoiceModal({ onClose, onCreated }) {
     try {
       await api.post('/invoices', {
         invoiceNumber: form.invoiceNumber,
+        sellerGstin:   form.sellerGstin,
         buyerGstin:    form.buyerGstin.toUpperCase(),
         amount:        Number(form.amount),
         date:          form.date,
@@ -80,6 +91,23 @@ export default function CreateInvoiceModal({ onClose, onCreated }) {
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-4 py-3 rounded-xl font-medium">
               {error}
+            </div>
+          )}
+
+          {sellerBusinesses.length > 1 && (
+            <div>
+              <label className={labelCls}>Issuing Business</label>
+              <select
+                name="sellerGstin"
+                value={form.sellerGstin}
+                onChange={handle}
+                required
+                className={inputCls}
+              >
+                {sellerBusinesses.map(b => (
+                  <option key={b.gstin} value={b.gstin}>{b.name} ({b.gstin})</option>
+                ))}
+              </select>
             </div>
           )}
 

@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    businesses: [{
+        name: { type: String, required: true, trim: true },
+        gstin: { type: String, required: true, uppercase: true, trim: true },
+        type: { type: String, enum: ['seller', 'buyer', 'both'], default: 'both' }
+    }],
     createdAt: { 
         type: Date, 
         default: Date.now 

@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
-const { getCurrentUser, switchRole, updateGstin, logout, register, login } = require('../controllers/authController');
+const { getCurrentUser, switchRole, updateGstin, addBusiness, logout, register, login } = require('../controllers/authController');
 const verifyToken = require('../middleware/auth');
 
 // Local auth routes
@@ -45,6 +45,7 @@ router.get('/google/callback',
 router.get('/me', verifyToken, getCurrentUser);
 router.post('/switch-role', verifyToken, switchRole);
 router.put('/gstin', verifyToken, updateGstin);
+router.post('/business', verifyToken, addBusiness);
 router.post('/logout', logout);
 
 module.exports = router;

@@ -6,6 +6,8 @@ import StatCard from '../components/dashboard/StatCard';
 import InvoiceTable from '../components/dashboard/InvoiceTable';
 import InvoiceModal from '../components/dashboard/InvoiceModal';
 import StatusBadge from '../components/dashboard/StatusBadge';
+import SettingsTab from '../components/dashboard/SettingsTab';
+import AuditFeed from '../components/dashboard/AuditFeed';
 import api from '../api/axios';
 import { BarChart, Bar, ResponsiveContainer, Tooltip } from 'recharts';
 
@@ -50,6 +52,29 @@ export default function BuyerDashboard() {
     setReqLoading(true);
     try {
       await api.post('/requests', { sellerGstin: reqSellerGstin.toUpperCase(), note: reqNote });
+      const handleFulfillRequest = async (id, invoiceId) => {
+        try {
+          await api.patch(`/requests/${id}/fulfill`, { invoiceId });
+          fetchData();
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      const handleExportCSV = async () => {
+        try {
+          const response = await api.get('/dashboard/export', { responseType: 'blob' });
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'InvoiceSync_GST_Return.csv');
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        } catch (err) {
+          console.error('Failed to export CSV', err);
+        }
+      };
       alert('Request sent successfully');
       setReqSellerGstin('');
       setReqNote('');
@@ -128,8 +153,14 @@ export default function BuyerDashboard() {
             </div>
 
             {/* GST Summary */}
-            <div className={`bg-[#111a15] border border-[#243124] rounded-2xl p-6 flex flex-col ${tab === 'invoices' ? 'hidden' : ''} ${tab === 'gst' ? 'xl:col-span-3 max-w-2xl' : ''}`}>
-              <h3 className="font-bold text-base text-white mb-5" style={{ fontFamily: 'Plus Jakarta Sans' }}>My GST Payable</h3>
+            <div className={`bg-[#111a15] border border-[#243124] rounded-2xl p-6 flex flex-col ${tab === 'invoices' || tab === 'settings' ? 'hidden' : ''} ${tab === 'gst' ? 'lg:col-span-3 max-w-2xl' : ''}`}>
+              <div className="flex justify-between items-center mb-5">
+                 <h3 className="font-bold text-base text-white" style={{ fontFamily: 'Plus Jakarta Sans' }}>GST Breakdown</h3>
+                 <button onClick={handleExportCSV} className="text-[10px] font-bold uppercase tracking-wider bg-[#4ade80]/10 hover:bg-[#4ade80]/20 text-[#4ade80] py-1.5 px-3 rounded-lg transition-colors border border-[#4ade80]/20 flex items-center gap-1.5">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                    Export CSV
+                 </button>
+              </div>
 
               <div className="flex flex-col gap-4 mb-5">
                 {[
@@ -167,8 +198,19 @@ export default function BuyerDashboard() {
                   </div>
                 )}
               </div>
+
+            {/* Settings Tab */}
+            <div className={`p-4 ${tab !== 'settings' ? 'hidden' : ''}`}>
+              <SettingsTab />
             </div>
+
+            {/* Audit Trail */}
+            <div className={`p-4 xl:w-2/3 ${tab !== 'audit' ? 'hidden' : ''}`}>
+              <AuditFeed />
+            </div>
+
           </div>
+        </div>
 
           {/* Invoice Request Section */}
           <div className={`flex gap-5 flex-wrap lg:flex-nowrap items-start ${tab !== 'dashboard' && tab !== 'requests' ? 'hidden' : ''}`}>

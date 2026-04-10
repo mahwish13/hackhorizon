@@ -21,7 +21,8 @@ exports.getCurrentUser = async (req, res, next) => {
                 email: user.email,
                 role: user.role,
                 gstin: user.gstin,
-                profilePicture: user.profilePicture
+                profilePicture: user.profilePicture,
+                businesses: user.businesses
             }
         });
     } catch (err) {
@@ -50,7 +51,8 @@ exports.switchRole = async (req, res, next) => {
                 email: user.email,
                 role: user.role,
                 gstin: user.gstin,
-                profilePicture: user.profilePicture
+                profilePicture: user.profilePicture,
+                businesses: user.businesses
             }
         });
     } catch (err) {
@@ -81,7 +83,8 @@ exports.updateGstin = async (req, res, next) => {
                 email: user.email,
                 role: user.role,
                 gstin: user.gstin,
-                profilePicture: user.profilePicture
+                profilePicture: user.profilePicture,
+                businesses: user.businesses
             }
         });
     } catch (err) {
@@ -92,7 +95,8 @@ exports.updateGstin = async (req, res, next) => {
 // Register
 exports.register = async (req, res, next) => {
     try {
-        const { name, email, password, role, gstin } = req.body;
+        const { name, email: rawEmail, password, role, gstin } = req.body;
+        const email = rawEmail?.trim().toLowerCase();
         
         let user = await User.findOne({ email });
         if (user) {
@@ -121,7 +125,8 @@ exports.register = async (req, res, next) => {
                         email: user.email,
                         role: user.role,
                         gstin: user.gstin,
-                        profilePicture: user.profilePicture
+                        profilePicture: user.profilePicture,
+                        businesses: user.businesses
                     }
                 }
             });
@@ -134,7 +139,8 @@ exports.register = async (req, res, next) => {
 // Login
 exports.login = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const { email: rawEmail, password } = req.body;
+        const email = rawEmail?.trim().toLowerCase();
         
         const user = await User.findOne({ email });
         if (!user || !user.password) {
@@ -157,7 +163,8 @@ exports.login = async (req, res, next) => {
                         email: user.email,
                         role: user.role,
                         gstin: user.gstin,
-                        profilePicture: user.profilePicture
+                        profilePicture: user.profilePicture,
+                        businesses: user.businesses
                     }
                 }
             });
@@ -178,4 +185,33 @@ exports.logout = (req, res, next) => {
             message: "Logged out successfully" 
         });
     });
+};
+
+// Add Business Context
+exports.addBusiness = async (req, res, next) => {
+    try {
+        const { name, gstin, type } = req.body;
+        if (!name || !gstin) return res.status(400).json({ success: false, message: "Business name and GSTIN are required" });
+
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        user.businesses.push({ name, gstin, type: type || 'both' });
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                gstin: user.gstin,
+                profilePicture: user.profilePicture,
+                businesses: user.businesses
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
 };

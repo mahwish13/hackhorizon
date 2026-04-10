@@ -36,7 +36,13 @@ export default function Register() {
     setIsLoading(true);
     setError('');
     try {
-      const res = await api.post('/auth/register', { name, email, password, role: activeRole, gstin });
+      const res = await api.post('/auth/register', { 
+        name, 
+        email: email.trim().toLowerCase(), 
+        password, 
+        role: activeRole, 
+        gstin 
+      });
       const { user } = res.data.data;
       login(user);
     } catch (err) {
