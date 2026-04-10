@@ -62,7 +62,7 @@ export default function Navbar() {
             Login
           </Link>
           <Link
-            to="/login"
+            to="/register"
             className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary/90 transition"
           >
             Get Started
@@ -107,7 +107,7 @@ export default function Navbar() {
               Login
             </Link>
             <Link
-              to="/login"
+              to="/register"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center bg-primary text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-primary/90 transition"
             >

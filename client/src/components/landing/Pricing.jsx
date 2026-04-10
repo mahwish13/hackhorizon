@@ -58,7 +58,7 @@ export default function Pricing() {
             <span className="text-sm text-secondary font-medium ml-1 mb-1.5">/month</span>
           </div>
 
-          <Link to="/login" className="w-full text-center block bg-card text-dark rounded-xl py-3 font-semibold hover:bg-secondary hover:text-white transition-colors">
+          <Link to="/register" className="w-full text-center block bg-card text-dark rounded-xl py-3 font-semibold hover:bg-secondary hover:text-white transition-colors">
             Get Started Free
           </Link>
 
@@ -94,7 +94,7 @@ export default function Pricing() {
             <span className="text-sm text-secondary font-medium ml-1 mb-1.5">/month</span>
           </div>
 
-          <Link to="/login" className="w-full text-center block bg-primary text-white rounded-xl py-3 font-semibold hover:bg-primary/80 hover:shadow-lg hover:shadow-primary/20 transition-all">
+          <Link to="/register" className="w-full text-center block bg-primary text-white rounded-xl py-3 font-semibold hover:bg-primary/80 hover:shadow-lg hover:shadow-primary/20 transition-all">
             Start Free Trial
           </Link>
 
@@ -125,7 +125,7 @@ export default function Pricing() {
             <span className="text-5xl font-extrabold text-dark tracking-tight">Custom</span>
           </div>
 
-          <Link to="/login" className="w-full text-center block bg-dark text-white rounded-xl py-3 font-semibold hover:bg-primary transition-colors">
+          <Link to="/register" className="w-full text-center block bg-dark text-white rounded-xl py-3 font-semibold hover:bg-primary transition-colors">
             Contact Sales
           </Link>
 

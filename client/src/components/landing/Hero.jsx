@@ -34,7 +34,7 @@ export default function Hero() {
         {/* Buttons row */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
           <Link
-            to="/login"
+            to="/register"
             className="flex items-center justify-center gap-2 bg-dark text-white rounded-xl px-7 py-3.5 font-medium text-sm hover:bg-primary transition-all duration-300"
           >
             Get Started
