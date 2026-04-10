@@ -1,27 +1,12 @@
-const jwt = require('jsonwebtoken');
-
+// Middleware to check if user is authenticated via session
 const verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!req.isAuthenticated()) {
         return res.status(401).json({ 
             success: false, 
-            message: "No token provided" 
+            message: "Not authenticated" 
         });
     }
-
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (err) {
-        return res.status(401).json({ 
-            success: false, 
-            message: "Invalid or expired token" 
-        });
-    }
+    next();
 };
 
 module.exports = verifyToken;
